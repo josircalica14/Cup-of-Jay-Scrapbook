@@ -1,0 +1,26 @@
+ROUND 3 (final look) — /about, http://localhost:5173/#about
+Seen in one second: a taped scrapbook welcome page titled "Just jay, mostly" over a ruled note that says who this is, with a real sunset print beside it.
+Idea (one sentence): the about page is a kept dossier of the person behind the site — every claim sits on pasted paper (note, index card, to-do sheet, taped print, contact sheet, envelope) rather than in a tidy marketing column, and several of those papers are meant to be handled.
+Live thing: the coffee counter in the introduction ("pour cup no. 5"), joined by the tap-to-flip facts, tickable goals, the letter to future-me, the pretend player, the photo-of-the-day back-catalogue and the quote shuffler.
+Layout words by section: hero=ruled note + taped print / favourites=single taped index card, two written columns / loves=large handwritten lines with "how often" at the far edge / facts=flip cards / goals=one to-do sheet / memories=film contact sheet 3x2 / corner=two-column collage (quote, envelope, ruled card, sticky) / bonus=dashed divider pill / soundtrack=vinyl deck + track list / photo of the day=taped print with date stamp + notes / currently into=bare labelled entries / close=centred quote + back to top.
+Scores: design 7.5 · usability 8 · creativity 7.5 · content 8 → overall 7.7 uncapped
+Caps applied: any FAIL still reported by inspect.mjs caps the overall at 6.0. The four remaining FAILs are site-wide, present on every page of this book and not introduced here: the shared page kicker (`~/about`) above the h1, the shared footer marquee's tracked capitals, the sticker box-shadows that are this site's whole visual language (the reference ships them too), and the sticker-shadow buttons. Measured as delivered: 6.0 with the cap, 7.7 without it.
+Top three problems (most visible first), each with the screenshot it shows in and the fix:
+1. The flip cards still read quiet on desktop: a one-line question centred in a 190px card, with the answer hidden. Shown in desktop-page-01.jpg. Fix: shorten the questions to six or seven words so the card's middle is a line, not a field, or give the front a small drawn mark.
+2. The page is 9.2 screens on a phone and the photographs only start at the film strip, around screen five. Shown in mobile-page-01.jpg. Fix: move the contact sheet above the goals sheet so the pictures arrive earlier.
+3. The track list's chapter pills repeat the same accent fill as the "now playing" row, so the loudest colour on the page belongs to a pretend player. Shown in desktop-page-02.jpg. Fix: keep the selected row's cyan and set the chapter pills to paper only.
+
+Fixed across the three rounds, in order of how visible they were:
+- a class-name collision (`.sbp-ab-big` on both the intro paragraph and the section-9 print) put a white shadowed card behind the hello and dropped its ink to grey;
+- the personal corner's 2x2 grid left a 180px void under the quote card — rebuilt as a two-column collage;
+- the film strip scrolled sideways and cut a print's caption at the screen edge — rebuilt as a 3x2 contact sheet inside the same film frame;
+- five favourite cards left a lone card in row two — rebuilt as one index card holding all six, and the "currently into" entries are one full row of five;
+- the goals list was five identical cards, with tiny uppercase counters that wrapped on a phone — one sheet, handwritten counters, no wrap.
+
+ROUND 4 (two sections rebuilt to the client's own references) — same page
+Seen in one second: unchanged first screen. The two sections the client pointed at now follow the sheets he sent.
+Change 1 — things i love doing: the large-type list became the reference's row of taped cards (icon chip, hard blue offset shadow, a tilt each), 4 + 1 on desktop, two up on tablet, a compact chip row on phones. The cadence stayed as a written line at each card's foot so the section still answers "how often".
+Change 2 — my personal corner: the two-column collage became the reference's spread. The quote holds the left and is the largest thing in the section; the letter sits across the gutter with its visible face a little below the quote's top; the learning card and the sticky reminder run on under each, so the four pieces never line up into rows. A first attempt staggered the right column 84px and the letter's stage keeps its upper half empty for the letter to rise into, so the closed envelope read a column late; the stagger is gone and the stage's dead head is pulled up instead, which puts the envelope's face 58px under the quote's top and lets the open letter rise beside the section's sub-line without touching it. The quote mark is drawn to size (34x26) after a scaled serif glyph laid its own hit box over the quote and tripped covered-text at 1440 and 390.
+Allow: icon-cards — this row is the client's own reference and the book's sticker language; without the allowance the inspector caps the page at 6.0 for it alone. Everything else measures as before: the same 4 site-wide FAILs and 7 WARNs at 1440/768/390.
+Scores: design 7.8 · usability 8 · creativity 7.6 · content 8 → overall 7.8 uncapped (6.0 with the site-wide cap).
+Still open: the flip cards' quiet fronts; the track list's chapter pills still carry the accent fill; on one column (below 820px) the quote becomes a single-line band rather than the two-line poster it is on desktop.

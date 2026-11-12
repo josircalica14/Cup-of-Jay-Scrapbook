@@ -1,0 +1,237 @@
+/* scrapbook.css — shared design language for the lower sections, matching
+   the navbar / hero / hello world: washi tape, hand-lettered accents, sticker
+   tilt, soft float shadows, and scroll-in reveals.
+   Reveals animate opacity + translate only, so rest rotations (on `rotate`) and
+   hover (on `transform`) keep their own properties. */
+
+/* section shell + heading block */
+.sb { position: relative; }
+.sb-head { margin: 0 0 40px; }
+.sb-title {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(2.25rem, 5vw, 3.4rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin: 0;
+  color: #1F1F1F;
+}
+/* hand-drawn squiggle that underlines a heading word */
+.sb-mark { position: relative; display: inline-block; z-index: 0; }
+.sb-mark::before {
+  content: "";
+  position: absolute; left: -4px; right: -4px; bottom: 0.06em; height: 0.34em;
+  background: #D6E2EC; opacity: 0.7; z-index: -1; border-radius: 3px;
+  /* drawn by default: the lower sections do not put a reveal on their heading,
+     so a scaleX(0) start left the marker stroke invisible. Sections that want
+     the draw-in reveal it with .is-in on the heading or the mark itself. */
+  transform: scaleX(1); transform-origin: left;
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.35s;
+}
+.sb.js .sb-mark::before { transform: scaleX(0); }
+.sb.js .is-in .sb-mark::before, .sb.js .sb-mark.is-in::before, .sb.js .is-in.sb-mark::before { transform: scaleX(1); }
+.sb.is-in .sb-mark::before, .sb-mark.is-in::before { transform: scaleX(1); }
+.sb-squig { display: block; width: 190px; height: 15px; color: #3F5BD8; margin-top: 14px; }
+.sb-squig path {
+  fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round;
+  stroke-dasharray: 260; stroke-dashoffset: 260;
+  transition: stroke-dashoffset 1.1s ease 0.3s;
+}
+.sb-squig.is-in path { stroke-dashoffset: 0; }
+
+/* washi tape strip */
+.sb-tape {
+  position: absolute; width: 78px; height: 23px;
+  background: rgba(238, 225, 165, 0.85);
+  border-left: 2px dotted rgba(255, 255, 255, 0.55);
+  border-right: 2px dotted rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+}
+
+/* small floating doodle accents */
+.sb-doodle { position: absolute; color: #3F5BD8; pointer-events: none; animation: sb-bob 7s ease-in-out infinite; }
+.sb-doodle.c { color: #D6E2EC; }
+.sb-doodle svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.sb-doodle .fill { fill: currentColor; stroke: none; }
+
+/* sticker: white paper, soft float shadow with warm tint, rest tilt via `rotate`, lifts on hover */
+.sb-sticker {
+  position: relative; background: #fff; border-radius: 4px;
+  box-shadow: 0 16px 30px -18px rgba(139, 92, 55, 0.3), 0 6px 12px -8px rgba(63, 91, 216, 0.08), 0 0 0 1px rgba(40, 30, 20, 0.05);
+  rotate: var(--r, 0deg);
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), rotate 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sb-sticker:hover { 
+    transform: translateY(-5px) scale(1.02); 
+    rotate: 0deg; 
+    box-shadow: 0 24px 40px -20px rgba(139, 92, 55, 0.38), 0 10px 20px -10px rgba(63, 91, 216, 0.12), 0 0 0 1px rgba(40, 30, 20, 0.06), 0 0 0 3px rgba(63, 91, 216, 0.05);
+  }
+}
+
+/* pill control (filter tabs, buttons) — inkin' marker look */
+.sb-pill {
+  border-radius: 999px; padding: 7px 17px; font-size: 0.85rem; font-weight: 500;
+  cursor: pointer; border: 1.5px solid #E4DFD6; background: transparent; color: #6B6B66;
+  transition: color 0.2s, background 0.2s, border-color 0.2s, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+}
+@media (hover: hover) and (pointer: fine) { 
+  .sb-pill:hover { 
+    border-color: #1F1F1F; 
+    color: #1F1F1F; 
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px -2px rgba(63, 91, 216, 0.15);
+  } 
+}
+.sb-pill[aria-selected="true"], .sb-pill[aria-pressed="true"] { 
+  background: #1F1F1F; 
+  border-color: #1F1F1F; 
+  color: #FAF7F2;
+  box-shadow: 0 4px 10px -4px rgba(31, 31, 31, 0.3);
+}
+.sb-pill:focus-visible { outline: 2px solid #3F5BD8; outline-offset: 2px; }
+
+/* lined notebook paper, drawn with an SVG data-URI ruling (no CSS gradient) */
+.sb-paper {
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='34' viewBox='0 0 4 34' preserveAspectRatio='none'%3E%3Crect y='32.5' width='4' height='1.5' fill='%23E4DFD6'/%3E%3C/svg%3E");
+  background-size: 100% 34px;
+  background-position: 0 12px;
+}
+
+/* ── guestbook: the one blue band in the scrapbook ──
+   A blue scribble sheet under the white paper card and the pastel notes.
+   The marker stroke under "note" is sky-on-paper and would vanish here, so it
+   goes paper white; the headline reads navy against the blue. */
+.gb {
+  background: linear-gradient(180deg, #D8E5FA 0%, #C2D6F4 100%);
+  border-top: 2px solid #1F1F1F;
+}
+.gb .sb-mark::before { background: #FAF7F2; opacity: 1; transform: scaleX(1); }
+.gb .sb-title { color: #16213F; }
+.gb .sb-squig { color: #1F1F1F; }
+
+/* ── section header pattern: kicker, serif title, hand-written line ──
+   The same trio opens "Pages I pasted in", the diary, the desk and the
+   guestbook, so every lower section announces itself the same way. */
+.sb-kick {
+  font-family: 'Inter', system-ui, sans-serif; font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: #6B6B66; margin: 0 0 10px;
+}
+.sb-sub {
+  font-family: 'Caveat', 'Comic Sans MS', cursive; font-weight: 500;
+  font-size: 27px; line-height: 1.15; color: #6B6B66; margin: 12px 0 0; max-width: 40ch;
+}
+
+/* ── diary: a tear-out page per entry ── */
+.sb-diary { display: grid; gap: 22px; margin: 0; padding: 0; list-style: none; }
+.sb-entry {
+  position: relative; background-color: #fff; border: 1.5px solid #E4DFD6; border-radius: 6px;
+  rotate: var(--r, 0deg); 
+  box-shadow: 0 16px 30px -20px rgba(139, 92, 55, 0.28), 0 4px 8px -6px rgba(63, 91, 216, 0.06);
+  transition: rotate 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sb-entry:hover { 
+    rotate: 0deg; 
+    box-shadow: 0 22px 36px -22px rgba(139, 92, 55, 0.36), 0 8px 16px -8px rgba(63, 91, 216, 0.1);
+  }
+}
+.sb-entry-btn {
+  display: flex; align-items: center; gap: 16px; width: 100%;
+  padding: 20px 20px 16px; background: none; border: 0; cursor: pointer;
+  text-align: left; font: inherit; color: inherit;
+}
+.sb-entry-btn:focus-visible { outline: 3px solid #D6E2EC; outline-offset: 3px; border-radius: 6px; }
+.sb-entry-date {
+  flex: none; display: grid; place-items: center; min-width: 64px; height: 26px; padding: 0 10px;
+  background: rgba(238, 225, 165, 0.9); color: #6B5B23;
+  font-family: 'Inter', system-ui, sans-serif; font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; rotate: -2deg;
+}
+.sb-entry-title {
+  flex: 1; font-family: 'Caveat', 'Comic Sans MS', cursive; font-weight: 700;
+  font-size: 28px; line-height: 1.1; color: #1F1F1F; transition: color 0.2s;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sb-entry-btn:hover .sb-entry-title { color: #3F5BD8; }
+}
+.sb-mood { flex: none; display: grid; justify-items: center; gap: 2px; width: 54px; }
+.sb-mood svg { width: 22px; height: 22px; fill: none; stroke: #3F5BD8; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.sb-mood em { font-family: 'Inter', system-ui, sans-serif; font-style: normal; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: #6B6B66; }
+.sb-entry-more {
+  flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%;
+  border: 1.5px solid #E4DFD6; color: #6B6B66;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s, border-color 0.2s;
+}
+.sb-entry-more svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.sb-entry-btn:hover .sb-entry-more { border-color: #1F1F1F; color: #1F1F1F; }
+.sb-entry-more.on { transform: rotate(45deg); color: #3F5BD8; border-color: #3F5BD8; }
+.sb-entry-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s ease-out; }
+
+/* small screens: the date and the mood share a top row, the title gets the
+   full width underneath instead of being squeezed into three lines */
+@media (max-width: 560px) {
+  .sb-entry-btn {
+    display: grid; grid-template-columns: auto 1fr auto;
+    grid-template-areas: 'date mood more' 'title title title';
+    gap: 14px 8px; align-items: center;
+  }
+  .sb-entry-date { grid-area: date; justify-self: start; }
+  .sb-mood { grid-area: mood; display: flex; align-items: center; gap: 6px; width: auto; justify-self: end; }
+  .sb-entry-more { grid-area: more; }
+  .sb-entry-title { grid-area: title; font-size: 26px; }
+  .sb-entry-body p { font-size: 24px; line-height: 32px; padding-right: 20px; }
+}
+.sb-entry-body > div { overflow: hidden; }
+.sb-entry-body p {
+  margin: 0; padding: 0 24px 22px 22px;
+  font-family: 'Caveat', 'Comic Sans MS', cursive; font-weight: 500;
+  font-size: 26px; line-height: 34px; color: rgba(31, 31, 31, 0.9);
+}
+
+/* ── the desk: the small interactive things, one taped card each ── */
+.sb-desk { display: grid; gap: 32px; grid-template-columns: 1fr; align-items: start; }
+@media (min-width: 820px) { .sb-desk { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px; } }
+.sb-tool {
+  position: relative; background: #fff; border: 1.5px solid #E4DFD6; border-radius: 6px;
+  padding: 26px 22px 22px; rotate: var(--r, 0deg);
+  box-shadow: 0 16px 30px -20px rgba(139, 92, 55, 0.28), 0 4px 8px -6px rgba(63, 91, 216, 0.06);
+  transition: rotate 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .sb-tool:hover { 
+    rotate: 0deg; 
+    transform: translateY(-3px);
+    box-shadow: 0 24px 40px -22px rgba(139, 92, 55, 0.36), 0 8px 16px -8px rgba(63, 91, 216, 0.1);
+  }
+}
+.sb-tool h3 { font-family: 'Caveat', 'Comic Sans MS', cursive; font-weight: 700; font-size: 30px; line-height: 1; margin: 0 0 14px; }
+
+/* a sub-heading inside a section ("right now") — same serif, one step down */
+.sb-h3 { font-size: clamp(1.6rem, 3vw, 2.2rem); }
+
+/* ── right now: taped labels ── */
+.sb-now { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 236px), 1fr)); margin: 0; padding: 0; list-style: none; }
+.sb-nowi { position: relative; }
+.sb-nowi small {
+  display: block; margin-bottom: 4px; font-family: 'Inter', system-ui, sans-serif;
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(31, 31, 31, 0.55);
+}
+
+/* ── reveal ── hidden state only under .sb.js + no-preference */
+@media (prefers-reduced-motion: no-preference) {
+  .sb.js [data-reveal] {
+    opacity: 0;
+    translate: 0 24px;
+    transition: opacity 0.6s ease, translate 0.7s cubic-bezier(0.34, 1.3, 0.5, 1);
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+  .sb.js [data-reveal].is-in { opacity: 1; translate: 0 0; }
+}
+@keyframes sb-spin { to { transform: rotate(360deg); } }
+@keyframes sb-bob  { 0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); } 50% { transform: translateY(-11px) rotate(calc(var(--r, 0deg) + 6deg)); } }
+@media (prefers-reduced-motion: reduce) {
+  .sb-doodle { animation: none; }
+  .sb-mark::before, .sb-squig path { transition: none; transform: none; stroke-dashoffset: 0; }
+}

@@ -1,0 +1,125 @@
+/* ═══════════════════════════════════════════════════════════
+   SECTION BACKGROUNDS — shapes, patterns, scribbles
+   One layer per home section, behind its content, bleeding off
+   both edges so wide screens get dressed gutters. Nothing here
+   carries an object drawing or a word.
+   ═══════════════════════════════════════════════════════════ */
+
+.sart {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.sart svg {
+  position: absolute;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* the edge shapes are the wide-screen dressing: on narrow screens the
+   gutters don't exist, so only the full-bleed patterns stay */
+@media (max-width: 767px) {
+  .sart svg { display: none; }
+}
+
+/* the hero's own marquee sits at the bottom of the section: keep the layer
+   clear of it so no shape crosses the moving ticker band */
+.sart-hero { bottom: 60px; }
+
+.sart .sa-acc { color: var(--acc, #3F5BD8); }
+.sart .sa-ink { color: #1F1F1F; }
+.sart .sa-paper { color: #FAF7F2; }
+
+/* ── floating sparkle animation — subtle vertical drift ── */
+@keyframes sa-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%       { transform: translateY(-10px) rotate(20deg); }
+}
+@keyframes sa-float-slow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%       { transform: translateY(-7px) rotate(-15deg); }
+}
+
+.sart .sa-float        { animation: sa-float      7s ease-in-out infinite; }
+.sart .sa-float-slow   { animation: sa-float-slow 11s ease-in-out infinite; animation-delay: -3s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sart .sa-float,
+  .sart .sa-float-slow { animation: none; }
+}
+
+/* ── moments: two soft colour fields fill the gutters ── */
+.sa-wash {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(63, 91, 216, 0.16), rgba(63, 91, 216, 0) 68%);
+  filter: blur(6px);
+  pointer-events: none;
+}
+.sa-wash-cyan {
+  background: radial-gradient(circle at 50% 50%, rgba(214, 226, 236, 0.9), rgba(214, 226, 236, 0) 70%);
+}
+
+/* ── moments: stacked pages keep their corners square-ish ── */
+.sa-pages rect { stroke-width: 1.3; }
+.sa-waves path { stroke-width: 1.6; }
+
+/* ── diary: the ruled page, faded at both edges ── */
+.sa-rule {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 41px,
+    rgba(31, 31, 31, 0.085) 41px 42px
+  );
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+
+/* the wavering margin line reads as a spine, so it keeps its wobble */
+.sa-margin path { stroke-width: 1.5; }
+
+/* ── the desk: graph-paper corners ── */
+.sa-grid {
+  position: absolute;
+  background-image:
+    repeating-linear-gradient(to right, rgba(31, 31, 31, 0.11) 0 1px, transparent 1px 24px),
+    repeating-linear-gradient(to bottom, rgba(31, 31, 31, 0.11) 0 1px, transparent 1px 24px);
+  -webkit-mask-image: radial-gradient(closest-side, #000, transparent);
+  mask-image: radial-gradient(closest-side, #000, transparent);
+}
+
+/* ── guestbook: a sparser corkboard dot field on the blue band ── */
+.sa-dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(250, 247, 242, 0.75) 1.3px, transparent 1.3px);
+  background-size: 26px 26px;
+  opacity: 0.7;
+  -webkit-mask-image: radial-gradient(120% 90% at 50% 40%, #000 35%, transparent 80%);
+  mask-image: radial-gradient(120% 90% at 50% 40%, #000 35%, transparent 80%);
+}
+
+/* each section is its own stacking context so the layer can sit at -1
+   without leaking above the guestbook's blue band. No overflow clipping on
+   .sb: the layer has to reach past the column into the gutters, and the body
+   already clips stray horizontal overflow. */
+.hero,
+.sb {
+  isolation: isolate;
+}
+
+.hero { position: relative; }

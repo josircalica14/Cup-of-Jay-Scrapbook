@@ -1,0 +1,905 @@
+/* pages.css — routed-page styles (nav, page shell, about page). Ported from
+   reference files/scrapbook/scrapbook/scrapbook-pages.css
+   Adaptations (noted like the about-redesign port):
+   - every class renamed sb- -> sbp-: the site's scrapbook.css already owns sb-mark,
+     sb-tape, sb-doodle, sb-sticker, sb-pill ... for the home sections, and both
+     stylesheets load on every page
+   - tokens swapped to the site palette (paper/ink/mute/acc); washi tape = the site's
+     butter, matching every polaroid here
+   - Fraunces -> Instrument Serif, mono face -> Inter (the reference's own swap note)
+   - the reference's dot-grid layer dropped: the site body already carries the same grid
+   - the sbp-strip band is paper, not ink — the same call the home marquee got
+   - drawn materials (notebook ruling) painted with the SVG data-URI used site-wide
+     instead of a CSS gradient
+   taste-skill-ignore — reference-mandated sticker shadows below */
+.sbp{
+  position:relative;isolation:isolate;min-height:100vh;overflow-x:clip;
+  color:#1F1F1F;font:15px/1.5 'Inter',system-ui,sans-serif;
+
+  --bg:#FAF7F2; --paper:#ffffff; --ink:#1F1F1F; --mute:#6B6B66; --acc:#3F5BD8;
+  --line:color-mix(in srgb,var(--acc) 16%,var(--bg));
+  --cyan:color-mix(in srgb,var(--acc) 45%,#ffffff);
+  --tape:rgba(238,225,165,.85);
+  --shadow:color-mix(in srgb,var(--acc) 22%,transparent);
+  --lh:36px; --fs:26px;
+  box-sizing:border-box}
+.sbp *,.sbp *::before,.sbp *::after{box-sizing:border-box}
+.sbp a{color:inherit}
+.sbp button{font:inherit;color:inherit}
+.sbp-hand{font-family:Caveat,"Comic Sans MS",cursive}
+.sbp :focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+
+/* ---------- decorative backdrop (no dots: the body carries the grid) ---------- */
+.sbp-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.sbp-blob{position:absolute;border-radius:50%;filter:blur(70px);will-change:transform;animation:sbp-drift 20s ease-in-out infinite alternate}
+.sbp-blob.a{width:380px;height:380px;background:var(--cyan);top:-90px;left:-110px;opacity:.3}
+.sbp-blob.b{width:420px;height:420px;background:var(--acc);right:-150px;top:40%;opacity:.16;animation-delay:-7s}
+.sbp-doodle{position:absolute;color:var(--acc);width:30px;height:30px;animation:sbp-bob 8s ease-in-out infinite}
+.sbp-doodle svg{width:100%;height:100%;fill:currentColor}
+.sbp-bg::after{content:"";position:absolute;inset:0;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E")}
+@keyframes sbp-drift{to{transform:translate3d(60px,40px,0) scale(1.12)}}
+@keyframes sbp-bob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-12px) rotate(8deg)}}
+@keyframes sbp-spin{to{transform:rotate(360deg)}}
+@keyframes sbp-scroll{to{transform:translateX(-50%)}}
+@keyframes sbp-pop{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+/* ---------- top bar (the reference's sticky navbar) ---------- */
+.sbp-top{
+  --bg:#FAF7F2; --paper:#ffffff; --ink:#1F1F1F; --mute:#6B6B66; --acc:#3F5BD8;
+  --cyan:color-mix(in srgb,var(--acc) 45%,#ffffff);
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:50;
+  background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);
+  border-bottom:2px solid var(--ink)}
+.sbp-bar{max-width:1080px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.sbp-brand{display:flex;align-items:center;gap:10px;font-family:'Instrument Serif',Georgia,serif;font-size:22px;line-height:1;letter-spacing:-.02em;text-decoration:none;white-space:nowrap}
+.sbp-brand img{height:36px;width:auto;object-fit:contain;transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
+.sbp-brand:hover img{transform:rotate(-8deg) scale(1.1)}
+.sbp-brand b{color:var(--acc);font-weight:400}
+.sbp-top nav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-left:auto;padding:4px 2px}
+.sbp-top nav::-webkit-scrollbar{display:none}
+.sbp-top nav a{position:relative;text-decoration:none;white-space:nowrap;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:22px;line-height:1;padding:5px 12px;border-radius:999px;border:1.5px dashed transparent;transition:transform .3s cubic-bezier(.34,1.56,.64,1),border-color .2s,color .2s}
+.sbp-top nav a:hover{transform:rotate(-3deg) translateY(-2px);border-color:var(--acc)}
+.sbp-top nav a[aria-current="page"]{background:var(--acc);color:#fff;transform:rotate(-2deg);border-color:var(--ink);box-shadow:3px 3px 0 var(--ink)} /* taste-skill-ignore: reference sticker shadow */
+.sbp-tab-n{display:none}
+
+/* burger + scrim exist only for the drawer; hidden while the row fits */
+.sbp-burger{display:none}
+.sbp-scrim{position:fixed;inset:0;z-index:40;background:rgba(31,31,31,.36);backdrop-filter:blur(2px);animation:sbp-fade .25s ease}
+@keyframes sbp-fade{from{opacity:0}to{opacity:1}}
+@keyframes sbp-drop{from{opacity:0;transform:translateY(-10px) scale(.98)}to{opacity:1;transform:none}}
+
+/* ---------- drawer: below 820px the tabs fold into a burger ---------- */
+@media (max-width:820px){
+  /* hold the page still behind the open drawer — pure CSS, so it lifts with
+     the breakpoint instead of waiting on a JS resize event */
+  html:has(.sbp-top.is-open){overflow:hidden}
+  .sbp-bar{flex-wrap:nowrap;gap:12px;padding:9px 16px}
+  .sbp-brand{font-size:20px;gap:8px}
+  .sbp-brand img{height:30px}
+
+  .sbp-burger{position:relative;flex:0 0 auto;display:block;width:46px;height:46px;margin-left:auto;padding:0;
+    background:var(--paper);border:2px solid var(--ink);border-radius:14px;cursor:pointer;
+    box-shadow:3px 3px 0 var(--acc);
+    transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
+  .sbp-burger:hover{box-shadow:4px 4px 0 var(--acc)}
+  .sbp-burger:active{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--acc)}
+  .sbp-burger span{position:absolute;left:12px;width:18px;height:2px;border-radius:2px;background:var(--ink);
+    transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .2s ease}
+  .sbp-burger span:nth-child(1){top:13px}
+  .sbp-burger span:nth-child(2){top:20px}
+  .sbp-burger span:nth-child(3){top:27px}
+  .sbp-burger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .sbp-burger[aria-expanded="true"] span:nth-child(2){opacity:0;transform:scaleX(.4)}
+  .sbp-burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+  .sbp-top nav{display:none}
+  .sbp-top.is-open nav{display:grid;position:absolute;left:12px;right:12px;top:calc(100% + 10px);
+    margin:0;padding:10px;gap:2px;overflow-y:auto;overscroll-behavior:contain;
+    max-height:calc(100dvh - 92px);
+    background:var(--paper);border:2px solid var(--ink);border-radius:18px;
+    box-shadow:6px 6px 0 var(--ink);animation:sbp-drop .3s cubic-bezier(.2,.8,.2,1)}
+  .sbp-top nav a{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    font-size:25px;padding:12px 14px;border-radius:14px}
+  .sbp-top nav a:hover{transform:none;border-color:transparent;background:color-mix(in srgb,var(--acc) 10%,transparent)}
+  .sbp-top nav a[aria-current="page"]{transform:none;box-shadow:3px 3px 0 var(--ink)}
+  .sbp-tab-n{display:block;font:600 10px/1 'Inter',system-ui,sans-serif;letter-spacing:.15em;color:var(--mute)}
+  .sbp-top nav a[aria-current="page"] .sbp-tab-n{color:color-mix(in srgb,#fff 74%,var(--acc))}
+}
+
+@media (min-width:821px){
+  /* grow past the breakpoint with the drawer open and nothing is left behind */
+  .sbp-scrim{display:none}
+}
+
+/* ---------- page chrome ---------- */
+.sbp-page{animation:sbp-pop .55s cubic-bezier(.2,.8,.2,1)}
+.sbp footer{margin-top:60px}
+.sbp-strip{margin:0 -30px;transform:rotate(-1.5deg);background:var(--paper);color:var(--ink);
+  border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);
+  padding:13px 0;overflow:hidden;white-space:nowrap;box-shadow:0 10px 24px -18px var(--shadow)}
+.sbp-track{display:inline-flex;gap:26px;animation:sbp-scroll 30s linear infinite}
+.sbp-strip:hover .sbp-track{animation-play-state:paused}
+.sbp-strip span{display:inline-flex;align-items:center;gap:26px;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.sbp-strip svg{width:13px;height:13px;fill:var(--cyan);flex:none}
+.sbp-foot{max-width:1080px;margin:0 auto;padding:34px 20px 50px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--mute);font-size:12px}
+
+/* ---------- page heading ---------- */
+.sbp-kick{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:0 0 8px}
+.sbp h1{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(2.4rem,7vw,4.2rem);line-height:1;letter-spacing:-.03em;margin:0}
+.sbp h2{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(1.6rem,4vw,2.2rem);line-height:1.1;letter-spacing:-.02em;margin:0 0 18px}
+.sbp-mark{position:relative;display:inline-block;z-index:0}
+.sbp-mark::before{content:"";position:absolute;left:-4px;right:-4px;bottom:.06em;height:.42em;background:var(--cyan);opacity:.55;z-index:-1;border-radius:3px;transform:scaleX(0);transform-origin:left;transition:transform .7s cubic-bezier(.2,.8,.2,1) .3s}
+.sbp-is-in .sbp-mark::before,.sbp-mark.sbp-is-in::before{transform:scaleX(1)}
+.sbp-sub{font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:28px;line-height:1.1;color:var(--mute);margin:14px 0 34px;max-width:34ch}
+.sbp-squig{width:190px;height:16px;color:var(--acc);display:block;margin:14px 0 34px}
+.sbp-squig path{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-dasharray:260;stroke-dashoffset:260;transition:stroke-dashoffset 1.1s ease .3s}
+.sbp-squig.sbp-is-in path{stroke-dashoffset:0}
+
+/* ---------- shared pieces ---------- */
+.sbp-tape{position:absolute;width:78px;height:23px;background:var(--tape);
+  border-left:2px dotted rgba(255,255,255,.55);border-right:2px dotted rgba(255,255,255,.55);pointer-events:none}
+.sbp-card{position:relative;background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:22px;
+  box-shadow:6px 6px 0 var(--acc);transition:transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .2s} /* taste-skill-ignore */
+.sbp-chip{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--ink);border-radius:999px;padding:3px 11px;
+  font-size:11px;letter-spacing:.06em;text-transform:uppercase;background:var(--paper);cursor:pointer;
+  transition:transform .2s,background .2s}
+.sbp-chip:hover{transform:translateY(-2px) rotate(-2deg)}
+.sbp-chip[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.sbp-chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 32px}
+
+/* lined notebook paper — the site's SVG data-URI ruling, sized to --lh */
+.sbp-lined{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='36' viewBox='0 0 4 36' preserveAspectRatio='none'%3E%3Crect y='34.5' width='4' height='1.5' fill='%23E4DFD6'/%3E%3C/svg%3E");
+  background-size:100% var(--lh);background-position:0 18px}
+
+/* polaroid */
+.sbp-pol{--r:-3deg;position:relative;background:#fff;color:#0a0a0a;padding:10px 10px 8px;
+  box-shadow:0 16px 28px -16px var(--shadow),0 0 0 1px rgba(10,10,10,.07);
+  transform:rotate(var(--r));transition:transform .45s cubic-bezier(.34,1.56,.64,1);cursor:pointer;border:0;text-align:left;width:100%;display:block} /* taste-skill-ignore */
+.sbp-pol:hover{transform:rotate(0) scale(1.04) translateY(-4px);z-index:2}
+.sbp-pol .sbp-shot{aspect-ratio:1/1;position:relative;overflow:hidden}
+.sbp-shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.sbp-pol p{margin:7px 0 0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:21px;line-height:1;text-align:center}
+/* the pencil date in the white margin, like writing on the frame itself */
+.sbp-pol time{display:block;margin:5px 1px 0;font:600 10px/1.4 'Inter',system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb,#0a0a0a 48%,transparent);text-align:right;white-space:nowrap}
+
+/* ---------- archives: zigzag timeline ---------- */
+.sbp-tl{position:relative;padding:6px 0 10px 40px}
+.sbp-tl::before{content:"";position:absolute;left:12px;top:0;bottom:0;border-left:2.5px dashed var(--ink)}
+.sbp-yr{position:relative;display:table;font-family:'Instrument Serif',Georgia,serif;font-weight:400;
+  font-size:clamp(2.6rem,9vw,4.4rem);line-height:1;color:var(--bg);-webkit-text-stroke:2px var(--ink);
+  letter-spacing:-.04em;margin:26px 0 22px -40px;padding:0 14px;background:var(--bg)}
+.sbp-yr:first-child{margin-top:0}
+.sbp-ent{position:relative;margin:0 0 30px}
+.sbp-ent .sbp-dot{position:absolute;top:26px;left:-36px;width:16px;height:16px;border-radius:50%;background:var(--acc);
+  border:2.5px solid var(--ink);box-shadow:0 0 0 5px var(--bg);transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.sbp-ent:hover .sbp-dot{transform:scale(1.35)}
+.sbp-ent::before{content:"";position:absolute;top:33px;left:-28px;width:28px;border-top:2.5px dashed var(--ink)}
+.sbp-ent .sbp-card{display:block;text-decoration:none;padding:14px 16px 16px;box-shadow:5px 5px 0 var(--cyan)} /* taste-skill-ignore */
+.sbp-ent .sbp-card:hover{transform:translateY(-4px) rotate(var(--t,0deg));box-shadow:8px 8px 0 var(--acc)} /* taste-skill-ignore */
+.sbp-ent .sbp-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.sbp-ent time{font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:24px;line-height:1;color:var(--acc)}
+.sbp-ent h3{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:18px;line-height:1.2;margin:4px 0 2px}
+.sbp-ent p{margin:0;font-size:13px;color:var(--mute)}
+.sbp-ph{position:relative;background:#fff;padding:8px 8px 6px;
+  box-shadow:0 10px 20px -12px var(--shadow),0 0 0 1px rgba(10,10,10,.08);transform:rotate(var(--t,-1.5deg));margin:6px 0 14px}
+.sbp-ph .sbp-shot{aspect-ratio:4/3;overflow:hidden}
+.sbp-ph .sbp-tape{left:50%;margin-left:-35px;top:-12px;transform:rotate(-3deg)}
+/* base state first, the desktop media query below turns these on */
+.sbp-deco{display:none;position:absolute;pointer-events:none;color:var(--acc)}
+@media(min-width:760px){
+  .sbp-tl{padding-left:0}
+  .sbp-tl::before{left:50%;margin-left:-1px}
+  .sbp-yr{margin:26px auto 22px;padding:0 18px}
+  .sbp-ent{width:calc(50% - 38px)}
+  .sbp-ent.l{margin-right:auto;--t:-1deg}
+  .sbp-ent.r{margin-left:auto;--t:1deg}
+  .sbp-ent::before{width:38px}
+  .sbp-ent.l::before{left:auto;right:-38px}
+  .sbp-ent.r::before{left:-38px}
+  .sbp-ent.l .sbp-dot{left:auto;right:-46px}
+  .sbp-ent.r .sbp-dot{left:-46px}
+  .sbp-deco{display:block;top:20px}
+  .sbp-ent.l .sbp-deco{left:calc(100% + 100px)}
+  .sbp-ent.r .sbp-deco{right:calc(100% + 100px)}
+}
+.sbp-stamp{width:94px;height:94px;border-radius:50%;border:3px double currentColor;display:grid;place-items:center;text-align:center;
+  font-size:10px;font-weight:700;line-height:1.3;letter-spacing:.14em;text-transform:uppercase;transform:rotate(-12deg);opacity:.85}
+.sbp-stamp b{display:block;font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:22px;line-height:1;letter-spacing:-.02em}
+.sbp-darr{width:96px;height:68px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.sbp-ent.r .sbp-darr{transform:scaleX(-1)}
+.sbp-sprk{display:flex;gap:6px;align-items:flex-end;color:var(--cyan)}
+.sbp-sprk svg{fill:currentColor;width:26px;height:26px;animation:sbp-bob 6s ease-in-out infinite}
+.sbp-sprk svg:nth-child(2){width:14px;height:14px;color:var(--acc);animation-delay:-2s}
+.sbp-sprk svg:nth-child(3){width:20px;height:20px;animation-delay:-4s}
+.sbp-ptg{width:86px;padding:9px 8px 7px;background:var(--paper);border:3px dotted currentColor;text-align:center;transform:rotate(7deg)}
+.sbp-ptg i{display:block;width:30px;height:30px;border-radius:50%;background:var(--cyan);border:2px solid var(--ink);margin:0 auto 4px}
+.sbp-ptg span{font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:20px;line-height:1;color:var(--ink)}
+
+/* ---------- snapshots: polaroid wall + lightbox ---------- */
+.sbp-wall{columns:2;column-gap:24px}
+@media(min-width:760px){.sbp-wall{columns:3}}
+.sbp-wall>*{break-inside:avoid;margin-bottom:26px;display:block}
+
+/* page margin art: a rail of kept-paper doodles tucked into the outer gutters
+   so the desktop side margins aren't blank. Sits behind the content, ignores
+   pointer events, and only shows where real gutter exists (past 1180px).
+   Two sizes: the full rail past 1360px, a compact one for 1280px laptops. */
+.sbp-art-host{position:relative}
+.sbp-pageart{position:absolute;inset:0;z-index:-1;pointer-events:none;display:none;color:var(--acc)}
+.sbp-pageart > *{position:absolute;opacity:.32;rotate:var(--rot,0deg);animation:sbp-bob 11s ease-in-out infinite}
+.sbp-pageart svg{display:block;width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* both rails are the same width and distance from the column, so the art's
+   outer edges are exactly mirrored and the page keeps equal margins */
+.sbp-pa-l,.sbp-pa-r{width:84px;height:84px}
+.sbp-pa-l{left:-108px}
+.sbp-pa-r{right:-108px}
+/* washi-tape strips and sticker dots between the doodles, so the gutter reads
+   as a decorated margin instead of a sparse column of outlines */
+.sbp-pa-tape{width:66px;height:19px;border-radius:2px;opacity:.85;
+  box-shadow:inset 0 0 0 1px rgba(31,31,31,.07)}
+.sbp-pa-tape.l,.sbp-pa-dot.l{left:-92px}
+.sbp-pa-tape.r,.sbp-pa-dot.r{right:-92px}
+.sbp-pa-dot{width:12px;height:12px;border-radius:50%;background:var(--cyan);
+  border:2.5px solid var(--ink);opacity:.6;animation-duration:9s}
+/* vertical rhythm down the page, staggered left against right */
+.sbp-pa-s1{top:110px}
+.sbp-pa-s2{top:22%}
+.sbp-pa-s3{top:38%}
+.sbp-pa-s4{top:54%}
+.sbp-pa-s5{top:70%}
+.sbp-pa-s6{top:86%}
+.sbp-pa-r.sbp-pa-s1{top:190px}
+.sbp-pa-r.sbp-pa-s3{top:31%}
+.sbp-pa-r.sbp-pa-s5{top:62%}
+.sbp-pa-r.sbp-pa-s6{top:92%}
+@media(min-width:1360px){
+  .sbp-pa-l,.sbp-pa-r{width:112px;height:112px}
+  .sbp-pa-l{left:-150px}
+  .sbp-pa-r{right:-150px}
+  .sbp-pa-tape.l,.sbp-pa-dot.l{left:-136px}
+  .sbp-pa-tape.r,.sbp-pa-dot.r{right:-136px}
+  .sbp-pa-tape{width:76px;height:22px}
+}
+@media(min-width:1260px){.sbp-pageart{display:block}}
+@media (prefers-reduced-motion:reduce){.sbp-pageart > *{animation:none}}
+
+/* hand-drawn margin art behind the wall: film strip, pencil swirl, an arrow
+   back at the photos and a vertical note. Sits under the polaroids, ignores
+   pointer events, and only shows where real gutter exists. */
+.sbp-wallwrap{position:relative}
+.sbp-wall{position:relative;z-index:1}
+.sbp-wallart{position:absolute;inset:-18px -6px -26px;z-index:0;pointer-events:none;color:var(--acc)}
+.sbp-wallart svg{position:absolute;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sbp-wallart .sbp-wa-film{left:-34px;top:0;height:100%;width:26px;opacity:.38}
+.sbp-wallart .sbp-wa-swirl{right:-104px;top:-30px;width:170px;opacity:.3;animation:sbp-bob 12s ease-in-out infinite}
+.sbp-wallart .sbp-wa-arrow{left:-52px;bottom:120px;width:104px;stroke-width:2.6;opacity:.55}
+.sbp-wallart .sbp-wa-stars{fill:currentColor;stroke:none;opacity:.5}
+.sbp-wallart .sbp-wa-stars.a{left:2px;top:24%;width:30px;animation:sbp-bob 9s ease-in-out infinite}
+.sbp-wallart .sbp-wa-stars.b{right:-1px;bottom:7%;width:26px;opacity:.38;animation:sbp-bob 11s ease-in-out infinite reverse}
+.sbp-wa-note{position:absolute;right:-32px;top:36%;margin:0;writing-mode:vertical-rl;transform:rotate(180deg);
+  font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:20px;line-height:1;color:var(--mute);opacity:.8}
+/* the wall needs an ending, not just a ragged bottom */
+.sbp-wall-end{margin:14px 0 4px;text-align:center;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;
+  font-size:24px;line-height:1;color:var(--mute)}
+.sbp-wall-end span{color:var(--acc);letter-spacing:.2em}
+
+/* the scrap sits in the empty half of the header row, taped beside the title,
+   at every width — sized down on phones so it never crowds the headline */
+.sbp-snaphead{position:relative;--sbp-h1:clamp(2.4rem,7vw,4.2rem)}
+.sbp-wa-scrap{position:absolute;right:2px;top:12px;padding:7px 13px 8px;background:#fff;
+  border:1.5px dashed color-mix(in srgb,var(--ink) 30%,transparent);transform:rotate(-3.5deg);
+  font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:16px;line-height:1;color:var(--ink)}
+.sbp-wa-scrap p{margin:0;white-space:nowrap}
+.sbp-wa-scrap .sbp-tape{top:-11px;left:50%;width:58px;height:18px;margin-left:-29px;transform:rotate(-3deg)}
+@media(min-width:640px){
+  /* track the title instead of the far edge: the note hangs a consistent gap
+     past the headline at every width, and never drifts right on wide screens */
+  .sbp-wa-scrap{right:auto;left:calc(var(--sbp-h1) * 5);top:48px;padding:11px 20px 12px;font-size:20px}
+  .sbp-wa-scrap .sbp-tape{width:74px;height:22px;margin-left:-37px}
+}
+@media(max-width:360px){
+  /* smallest phones: the title runs wider, so the scrap shrinks to keep clear */
+  .sbp-wa-scrap{padding:6px 10px 7px;font-size:15px}
+  .sbp-wa-scrap .sbp-tape{width:50px;height:16px;margin-left:-25px}
+}
+
+/* the gutters only exist past ~1180px; below that the art would sit on the photos */
+.sbp-wa-film,.sbp-wa-swirl,.sbp-wa-arrow,.sbp-wa-note{display:none}
+@media(min-width:1180px){
+  .sbp-wallart .sbp-wa-film,.sbp-wallart .sbp-wa-swirl,.sbp-wallart .sbp-wa-arrow,.sbp-wa-note{display:block}
+  .sbp-wallart .sbp-wa-stars.a{left:-52px;width:54px}
+  .sbp-wallart .sbp-wa-stars.b{right:-38px;width:30px}
+}
+@media(min-width:1320px){
+  .sbp-wallart .sbp-wa-arrow{left:-76px}
+}
+.sbp-lb{position:fixed;inset:0;z-index:80;background:color-mix(in srgb,var(--ink) 78%,transparent);display:none;place-items:center;padding:24px}
+.sbp-lb.on{display:grid;animation:sbp-pop .3s ease}
+.sbp-lb .sbp-pol{max-width:440px;cursor:default;--r:-2deg}
+.sbp-lb .sbp-pol:hover{transform:rotate(-2deg)}
+.sbp-lb .sbp-pol p{font-size:28px}
+/* the viewer shows the whole frame, uncropped */
+.sbp-lb .sbp-shot.sbp-shot-full{aspect-ratio:auto;display:grid;place-items:center;background:#0a0a0a}
+.sbp-lb .sbp-shot-full img{width:auto;height:auto;max-width:100%;max-height:min(58vh,520px);object-fit:contain}
+.sbp-lbbtns{display:flex;justify-content:space-between;margin-top:14px;gap:10px}
+
+/* ---------- dear diary: a cloth-covered book that opens, then turns ----------
+   Two pages at a time on desktop; one page per leaf on phones. Pages are real
+   3D leaves (front/back), so a turn shows the sheet moving, not a crossfade.
+   The cover and the inside back cover are part of the object, not a picture. */
+.sbp-bk-wrap{--pw:min(430px,40vw);--ph:calc(var(--pw)*1.45);--pl:calc(var(--pw)*.0744);position:relative;margin-top:14px}
+.sbp-bk-stage{perspective:2600px;perspective-origin:50% 44%;padding:16px 0 46px}
+.sbp-bk{position:relative;width:calc(var(--pw)*2);height:var(--ph);margin:0 auto;
+  transform-style:preserve-3d;transition:transform 1.05s cubic-bezier(.645,.045,.355,1)}
+/* a closed book is one page wide, so the cover slides to the middle */
+.sbp-bk[data-s="cover"]{transform:translateX(-25%)}
+
+/* boards: the blue cover showing around the page block */
+.sbp-bk-bd{position:absolute;top:-11px;bottom:-11px;background:var(--acc);
+  border:3px solid var(--ink);box-shadow:0 26px 46px -30px rgba(31,31,31,.6)}
+.sbp-bk-bd.r{left:50%;right:-11px;border-radius:0 14px 14px 0}
+.sbp-bk-bd.l{left:-11px;right:50%;border-radius:14px 0 0 14px;opacity:0;transition:opacity .6s ease .35s}
+.sbp-bk[data-s="open"] .sbp-bk-bd.l,.sbp-bk[data-s="back"] .sbp-bk-bd.l{opacity:1}
+/* the inside back cover, which is what the last page turn reveals */
+.sbp-bk-bd.r::after{content:"cup of jay \00b7 vol. 4";position:absolute;right:30px;bottom:26px;
+  font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:22px;line-height:1;
+  color:var(--bg);opacity:.82;transform:rotate(-5deg)}
+
+/* leaves: each sheet's front is a right-hand page, its back a left-hand page */
+.sbp-bk-leaf{position:absolute;left:50%;top:0;width:50%;height:100%;transform-origin:left center;
+  transform-style:preserve-3d;transition:transform 1.15s cubic-bezier(.645,.045,.355,1)}
+.sbp-bk-leaf[data-turned]{transform:rotateY(-180deg)}
+.sbp-bk-face{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.sbp-bk-face.back{transform:rotateY(180deg)}
+/* a sheet darkens as it passes the spine */
+.sbp-bk-face::after{content:"";position:absolute;inset:0;background:rgba(31,31,31,.3);opacity:0;pointer-events:none;z-index:5}
+.sbp-bk-leaf.moving .sbp-bk-face::after{animation:sbp-bk-shade 1.15s ease}
+@keyframes sbp-bk-shade{0%,100%{opacity:0}48%{opacity:.5}52%{opacity:.5}}
+
+/* ruled page, margin line, gutter depth */
+.sbp-bk-pg{position:absolute;inset:0;background-color:var(--paper);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='36' viewBox='0 0 4 36' preserveAspectRatio='none'%3E%3Crect y='34.5' width='4' height='1.5' fill='%23E4DFD6'/%3E%3C/svg%3E");
+  background-size:100% var(--pl);background-position:0 calc(32px + 2*var(--pl));
+  box-shadow:inset 0 0 0 1px rgba(31,31,31,.06)}
+.sbp-bk-pg::before{content:"";position:absolute;top:0;bottom:0;width:2px;background:var(--cyan);opacity:.5}
+.sbp-bk-pg.r::before{left:44px}
+.sbp-bk-pg.l::before{right:44px}
+.sbp-bk-pg::after{content:"";position:absolute;inset:0;pointer-events:none}
+.sbp-bk-pg.r::after{box-shadow:inset 36px 0 44px -38px rgba(31,31,31,.5)}
+.sbp-bk-pg.l::after{box-shadow:inset -36px 0 44px -38px rgba(31,31,31,.5)}
+.sbp-bk-in{position:absolute;inset:0;display:flex;flex-direction:column;padding:34px 30px 36px 62px}
+.sbp-bk-pg.l .sbp-bk-in{padding:34px 62px 36px 30px}
+
+/* the written head of a page */
+.sbp-bk-hd{flex:none}
+.sbp-bk-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;height:var(--pl)}
+.sbp-bk-dt{font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:26px;line-height:var(--pl);color:var(--acc);white-space:nowrap}
+.sbp-bk-dt i{font-style:normal;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:18px;color:var(--mute);margin-left:5px}
+.sbp-bk-mood{display:inline-flex;align-items:center;gap:6px;margin:0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:20px;line-height:1;color:var(--mute);white-space:nowrap}
+.sbp-bk-mood svg{width:17px;height:17px;fill:none;stroke:var(--acc);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sbp-bk-hd h3{font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:31px;line-height:var(--pl);margin:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
+
+.sbp-bk-tx{flex:1;min-height:0;overflow:auto;scrollbar-width:none;padding-top:2px}
+.sbp-bk-tx::-webkit-scrollbar{display:none}
+.sbp-bk-tx p{margin:0 0 var(--pl);font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;
+  font-size:calc(var(--pl)*.75);line-height:var(--pl);color:var(--ink)}
+.sbp-bk-tx p:last-child{margin-bottom:0}
+
+/* a photo from the roll, taped into the entry */
+.sbp-bk-snap{position:relative;flex:none;width:58%;margin:12px 0 2px;padding:7px 7px 0;background:#fff;
+  rotate:var(--t,-1.5deg);box-shadow:0 14px 24px -18px rgba(31,31,31,.55),0 0 0 1px rgba(31,31,31,.06)} /* taste-skill-ignore: taped print */
+/* the print sits at the outer edge of the page, away from the gutter */
+.sbp-bk-pg.r .sbp-bk-snap{align-self:flex-end}
+.sbp-bk-snap img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.sbp-bk-snap figcaption{margin:6px 1px 8px;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;
+  font-size:18px;line-height:1.1;color:rgba(31,31,31,.62)}
+.sbp-bk-snap-tape{position:absolute;top:-9px;left:50%;width:66px;height:19px;margin-left:-33px;background:var(--tape);
+  border-left:2px dotted rgba(255,255,255,.55);border-right:2px dotted rgba(255,255,255,.55);rotate:-3deg}
+
+.sbp-bk-pn{position:absolute;bottom:7px;left:0;right:0;text-align:center;
+  font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:18px;line-height:1;color:var(--mute)}
+
+/* cover: blue cloth board, paper label taped on, ribbon marker at the spine */
+.sbp-bk-cover{position:absolute;inset:0;display:grid;place-items:center;background:var(--acc);
+  border:3px solid var(--ink);border-radius:4px 14px 14px 4px}
+.sbp-bk-cover::before{content:"";position:absolute;inset:16px 16px 16px 38px;border:2px dashed rgba(255,255,255,.5);
+  border-radius:2px 8px 8px 2px;pointer-events:none}
+.sbp-bk-cover::after{content:"";position:absolute;left:0;top:0;bottom:0;width:26px;background:rgba(31,31,31,.22);
+  border-radius:2px 0 0 2px;pointer-events:none}
+.sbp-bk-plate{position:relative;z-index:1;width:74%;background:var(--bg);border:2px solid var(--ink);padding:26px 24px 22px;
+  text-align:center;rotate:-2deg;box-shadow:6px 6px 0 rgba(31,31,31,.5)} /* taste-skill-ignore */
+.sbp-bk-plate-top{display:block;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:18px;line-height:1;color:var(--mute)}
+.sbp-bk-plate-ttl{display:block;font-family:'Instrument Serif',Georgia,serif;font-weight:400;
+  font-size:clamp(2.1rem,5.4vw,3.2rem);line-height:.92;letter-spacing:-.03em;margin:10px 0 12px}
+.sbp-bk-plate-sub{display:block;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:22px;line-height:1;color:var(--acc)}
+.sbp-bk-plate-tape{position:absolute;top:-12px;left:50%;width:74px;height:21px;margin-left:-37px;background:var(--tape);rotate:-3deg;
+  border-left:2px dotted rgba(255,255,255,.6);border-right:2px dotted rgba(255,255,255,.6)}
+.sbp-bk-sp{position:absolute;width:22px;height:22px;fill:var(--cyan)}
+.sbp-bk-sp.a{top:9%;right:12%}
+.sbp-bk-sp.b{bottom:13%;left:17%;width:15px;height:15px}
+.sbp-bk-rib{position:absolute;left:24px;bottom:-34px;width:20px;height:76px;background:#F2D9D3;
+  border:2px solid var(--ink);z-index:2;clip-path:polygon(0 0,100% 0,100% 100%,50% 79%,0 100%)}
+
+/* the inside cover: a welcome page whose whole composition is sized in
+   container units, so it scales with the sheet at any book width */
+.sbp-bk-pg.sbp-bk-ins{container-type:size;
+  background-color:color-mix(in srgb,var(--acc) 9%,var(--paper));
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='2' cy='2' r='1.4' fill='%23D8D1C4'/%3E%3C/svg%3E");
+  background-size:22px 22px;background-position:0 0}
+.sbp-bk-pg.sbp-bk-ins::before{display:none}
+.sbp-bk-wi{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:space-between;text-align:center;padding:7cqw 13cqw 6cqw 7cqw}
+/* the nameplate: a card pasted in, slightly askew */
+.sbp-bk-np{border:2px solid var(--ink);background:var(--paper);padding:1.6cqw 5cqw 2cqw;
+  rotate:-2deg;box-shadow:1cqw 1cqw 0 var(--ink)} /* taste-skill-ignore: pasted nameplate */
+.sbp-bk-np span{display:block;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;
+  font-size:3.6cqw;line-height:1.1;color:var(--mute)}
+.sbp-bk-np b{display:block;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;
+  font-size:9.5cqw;line-height:1.05;color:var(--acc);margin:.4cqw 0 .2cqw}
+.sbp-bk-np small{display:block;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;
+  font-size:3.2cqw;line-height:1.1;color:var(--mute)}
+/* a square print taped down, with the coffee sticker over its corner */
+.sbp-bk-wphoto{position:relative;width:46cqw;max-width:172px;background:#fff;padding:2.4cqw 2.4cqw 1.8cqw;margin:0;
+  rotate:3deg;box-shadow:0 2cqw 4cqw -2cqw rgba(31,31,31,.45),0 0 0 1px rgba(31,31,31,.06); /* taste-skill-ignore: taped print */
+  transition:rotate .4s cubic-bezier(.34,1.56,.64,1),transform .4s cubic-bezier(.34,1.56,.64,1)}
+.sbp-bk-wphoto:hover{rotate:0deg;transform:scale(1.04)}
+.sbp-bk-wphoto img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}
+.sbp-bk-wphoto figcaption{margin:1.4cqw 0 .4cqw;font-family:Caveat,"Comic Sans MS",cursive;
+  font-weight:700;font-size:5.6cqw;line-height:1.05;color:rgba(31,31,31,.72)}
+.sbp-bk-wtape{position:absolute;top:-2.6cqw;left:50%;width:16cqw;height:5cqw;margin-left:-8cqw;
+  background:var(--tape);rotate:-3deg;
+  border-left:2px dotted rgba(255,255,255,.55);border-right:2px dotted rgba(255,255,255,.55)}
+.sbp-bk-wst{position:absolute;right:-9cqw;bottom:5cqw;width:15cqw;height:15cqw;border-radius:50%;
+  border:3px double var(--acc);color:var(--acc);background:var(--paper);display:grid;place-items:center;
+  font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:clamp(12px,3cqw,14px);
+  line-height:1.1;transform:rotate(14deg)} /* taste-skill-ignore: sticker */
+/* the note to whoever opened the book */
+.sbp-bk-wtx h3{font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:8.6cqw;
+  line-height:1;color:var(--acc);margin:0 0 1cqw;white-space:normal}
+.sbp-bk-wtx p{margin:0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;
+  font-size:5.8cqw;line-height:1.2;color:var(--ink)}
+.sbp-bk-sg{display:block;margin-top:1.6cqw;font-family:Caveat,"Comic Sans MS",cursive;
+  font-weight:700;font-size:6.2cqw;line-height:1;color:var(--acc);transform:rotate(-2deg)}
+.sbp-bk-spark{position:absolute;width:5.2cqw;height:5.2cqw;fill:var(--cyan);
+  animation:sbp-bob 6s ease-in-out infinite}
+.sbp-bk-spark.a{top:26%;left:6%}
+.sbp-bk-spark.b{top:62%;right:6%;width:3.6cqw;height:3.6cqw;animation-delay:-3s}
+/* the print settles onto the page as the leaf turns */
+.sbp-bk-leaf[data-turned] .sbp-bk-wphoto,
+.sbp-bk[data-s="open"] .sbp-bk-ins .sbp-bk-wphoto{
+  animation:sbp-bk-settle .8s cubic-bezier(.34,1.56,.64,1) .55s backwards}
+@keyframes sbp-bk-settle{from{opacity:0;transform:rotate(-14deg) scale(.8) translateY(20px)}}
+.sbp-bk-pg.sbp-bk-endp{background-color:var(--bg);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='2' cy='2' r='1.4' fill='%23D8D1C4'/%3E%3C/svg%3E");
+  background-size:22px 22px;background-position:0 0}
+.sbp-bk-pg.sbp-bk-endp::before{display:none}
+.sbp-bk-center{justify-content:center;align-items:center;text-align:center}
+.sbp-bk-hand{margin:0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:22px;line-height:1.15;color:var(--acc)}
+.sbp-bk-name{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(2rem,5vw,2.5rem);
+  line-height:.95;letter-spacing:-.03em;margin:6px 0 8px}
+.sbp-bk-stars{width:56px;height:42px;fill:none;stroke:var(--acc);stroke-width:2;stroke-linejoin:round;margin-bottom:4px}
+.sbp-bk-endp .sbp-bk-hand{font-weight:500;font-size:22px;color:var(--mute);max-width:24ch}
+
+/* controls */
+.sbp-bk-ctl{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:26px}
+.sbp-bk-btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:9px 20px;
+  border:2px solid var(--ink);border-radius:999px;background:var(--paper);color:var(--ink);cursor:pointer;
+  font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:22px;line-height:1;
+  box-shadow:3px 3px 0 var(--ink);transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .18s,background .18s} /* taste-skill-ignore */
+.sbp-bk-btn:hover:not(:disabled){transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--acc)}
+.sbp-bk-btn:active:not(:disabled){transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.sbp-bk-btn:disabled{opacity:.35;cursor:default;box-shadow:none}
+.sbp-bk-btn.go{background:var(--acc);color:#fff}
+.sbp-bk-n{font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:22px;line-height:1;
+  color:var(--mute);min-width:126px;text-align:center}
+.sbp-bk-hint{margin:12px 0 0;text-align:center;font-size:13px;color:var(--mute)}
+
+/* phones and tablets: one taller page per leaf, and the turned sheets are
+   clipped at the stage instead of lying open beside the single page */
+@media (max-width:900px){
+  .sbp-bk-wrap{--pw:min(430px,82vw);--ph:calc(var(--pw)*1.55);--pl:28px;display:flex;flex-direction:column}
+  /* the turn controls ride above the book, so the first screen always holds
+     the action instead of hiding it under a tall page */
+  .sbp-bk-ctl{order:-1;margin:0 0 12px;gap:10px}
+  /* label on its own line, the two turns beneath it, centred */
+  .sbp-bk-n{order:-1;flex:1 0 100%;min-width:0;font-size:20px}
+  .sbp-bk-btn{font-size:20px;padding:9px 16px}
+  .sbp-bk{width:var(--pw)}
+  .sbp-bk-stage{overflow:hidden;padding:16px 0 50px}
+  /* a thinner cover rim on phones, so the board still fits the stage */
+  .sbp-bk-bd.r{left:-6px;right:-6px;top:-6px;bottom:-6px;border-radius:0 10px 10px 0}
+  .sbp-bk-bd.l{display:none}
+  .sbp-bk-leaf{left:0;width:100%}
+  .sbp-bk-in,.sbp-bk-pg.l .sbp-bk-in{padding:30px 24px 32px 56px}
+  /* on a single page the margin line flips to the left, so the welcome
+     page's padding follows it */
+  .sbp-bk-wi{padding:7cqw 7cqw 6cqw 14.5cqw}
+  .sbp-bk-pg.l::before{right:auto;left:44px}
+  .sbp-bk-pg.l::after{box-shadow:inset 36px 0 44px -38px rgba(31,31,31,.5)}
+  .sbp-bk-tx p{font-size:calc(var(--pl)*.8)}
+  .sbp-bk[data-s="cover"]{transform:none}
+  .sbp-bk-rib{display:none}
+  .sbp-bk-snap{width:62%}
+}
+@media (max-width:600px){
+  /* no keyboard on a phone, so the shortcut hint is just noise */
+  .sbp-bk-hint{display:none}
+}
+
+/* ---------- about page ----------
+   Ported from reference files/about_page_redesign/scrapbook-pages.css: the ten
+   sections, the compositions and the icon outlines are the reference's. Classes
+   renamed sb-ab- -> sbp-ab- and the tokens are the site's; Fraunces -> Instrument
+   Serif and the mono face -> Inter, the same swap every port here made. The ruled
+   paper is the site's SVG data-URI instead of a repeating gradient, the highlight
+   on a phrase is a flat block rather than a gradient, and the vinyl is drawn in
+   SVG so it carries no repeating-radial-gradient.
+   (the hello section on the home page lives in home-about.css)
+   taste-skill-ignore — the reference's sticker shadows, kept for the site's look */
+.sbp-ab-sec{margin:0 0 clamp(96px,11vw,150px);scroll-margin-top:96px}
+.sbp-ab-sec h2{margin:0}
+.sbp-ab-sub{font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:26px;line-height:1.15;
+  color:var(--mute);margin:8px 0 34px;max-width:46ch}
+
+/* the shared resting tilt: `rotate` holds it, so the reveal's translate and any
+   hover on `transform` never fight over the same property */
+.sbp-ab-t{--r:0deg;position:relative;rotate:var(--r)}
+/* labels on this page are written, not stamped: handwriting at a readable size
+   instead of a tiny uppercase tag */
+.sbp-ab-t small{display:block;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:19px;line-height:1.15;color:var(--mute)}
+.sbp-ab-ic{display:grid;place-items:center;width:46px;height:46px;border-radius:12px;background:var(--acc);color:#fff;
+  border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink); /* taste-skill-ignore: reference sticker chip */
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.sbp-ab-ic svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sbp-ab-favs li:hover .sbp-ab-ic{transform:rotate(-12deg) scale(1.1)}
+
+/* a print from the phone roll (or the dashed placeholder if the roll loses one) */
+.sbp-ab-shot{display:block;overflow:hidden;background:#fff}
+.sbp-ab-shot img{display:block;width:100%;object-fit:cover}
+.sbp-ab-noimg{display:grid;place-content:center;justify-items:center;gap:6px;aspect-ratio:4/5;
+  border:2px dashed var(--acc);color:var(--acc);background:color-mix(in srgb,var(--acc) 7%,#fff)}
+.sbp-ab-noimg svg{width:38px;height:38px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sbp-ab-noimg em{font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:18px;font-style:normal}
+
+/* 1 — the introduction: a ruled note taped in, with a print beside it */
+.sbp-ab-intro{display:grid;gap:44px;grid-template-columns:1fr}
+@media(min-width:900px){.sbp-ab-intro{grid-template-columns:1.3fr .7fr;gap:48px;align-items:start}}
+/* right column: the print, then the coffee counter and the three answers under it */
+.sbp-ab-aside{display:grid;gap:0;align-content:start}
+.sbp-ab-side{display:grid;gap:22px;margin:34px auto 0;max-width:360px;width:100%}
+.sbp-ab-side .sbp-ab-cups{margin:0}
+.sbp-ab-side .sbp-ab-slots{grid-template-columns:1fr}
+.sbp-ab-note{--abl:40px;background-color:var(--paper);border:2px solid var(--ink);border-radius:6px;
+  padding:34px 30px 26px 62px;box-shadow:8px 8px 0 var(--acc); /* taste-skill-ignore: pasted page */
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='40' viewBox='0 0 4 40' preserveAspectRatio='none'%3E%3Crect y='38.5' width='4' height='1.5' fill='%23E4DFD6'/%3E%3C/svg%3E");
+  background-size:100% var(--abl);background-position:0 30px}
+.sbp-ab-note::before{content:"";position:absolute;left:44px;top:0;bottom:0;width:2px;background:var(--cyan);opacity:.7}
+/* the hello written on the note (the print in section 9 is .sbp-ab-big — two
+   different things, two names) */
+.sbp-ab-hello{margin:0 0 26px;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;
+  font-size:clamp(1.4rem,3vw,1.9rem);line-height:var(--abl);color:var(--ink)}
+/* paragraphs advance in whole ruled lines, so the writing stays on the ruling */
+.sbp-ab-hello p{margin:0 0 var(--abl)}
+.sbp-ab-hello p:last-child{margin-bottom:0}
+.sbp-ab-sign{color:var(--acc)}
+/* the page's one live thing, up in the introduction: the coffee counter the home
+   hello keeps too, so the first screen holds a real control */
+.sbp-ab-cups{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin:0 0 30px}
+.sbp-ab-cup{display:inline-flex;align-items:center;gap:10px;min-height:46px;padding:8px 20px 8px 12px;border-radius:999px;
+  border:2px solid var(--ink);background:var(--paper);color:var(--ink);cursor:pointer;
+  font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:22px;line-height:1;
+  box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s} /* taste-skill-ignore: reference sticker shadow */
+.sbp-ab-cup:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--acc)} /* taste-skill-ignore */
+.sbp-ab-cup:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)} /* taste-skill-ignore */
+.sbp-ab-cup svg{width:30px;height:30px;overflow:visible;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sbp-ab-cup b{display:inline-block;font-weight:700;color:var(--acc)}
+.sbp-ab-cup .steam path{stroke:var(--acc);stroke-dasharray:14;opacity:0;animation:sbp-ab-steam 2.4s ease-in-out infinite}
+.sbp-ab-cup .steam path:nth-child(2){animation-delay:.5s}
+.sbp-ab-cup .steam path:nth-child(3){animation-delay:1s}
+@keyframes sbp-ab-steam{0%{stroke-dashoffset:14;opacity:0;transform:translateY(3px)}40%{opacity:1}100%{stroke-dashoffset:-14;opacity:0;transform:translateY(-5px)}}
+.sbp-ab-cup .bump{animation:sbp-ab-bump .45s cubic-bezier(.34,1.56,.64,1)}
+@keyframes sbp-ab-bump{40%{transform:scale(1.35) rotate(-6deg)}}
+.sbp-ab-cupsnote{margin:0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:21px;line-height:1.2;color:var(--mute)}
+.sbp-ab-hello em{position:relative;z-index:0;font-style:normal}
+.sbp-ab-hello em::before{content:"";position:absolute;left:-3px;right:-3px;bottom:.06em;height:.36em;
+  background:var(--cyan);opacity:.55;z-index:-1;border-radius:2px}
+.sbp-ab-slots{display:grid;gap:12px;margin:0}
+@media(min-width:620px){.sbp-ab-slots{grid-template-columns:repeat(3,1fr);gap:16px}}
+.sbp-ab-slots>div{border:2px dashed var(--line);border-radius:14px;padding:10px 14px;
+  background:color-mix(in srgb,var(--paper) 70%,transparent)}
+.sbp-ab-slots dt{font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:19px;line-height:1.1;color:var(--mute)}
+.sbp-ab-slots dd{margin:4px 0 0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:21px;line-height:1.15}
+.sbp-ab-print{position:relative;margin:0 auto;max-width:340px;padding:10px 10px 6px;background:#fff;color:#0a0a0a;
+  rotate:2.5deg;box-shadow:0 18px 30px -16px var(--shadow),0 0 0 1px rgba(10,10,10,.06)} /* taste-skill-ignore: taped print */
+.sbp-ab-print figcaption{margin:8px 1px 2px;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;
+  font-size:19px;line-height:1.15;color:rgba(31,31,31,.74)}
+
+/* 2 — favorite things: one taped index card holding all six, in two written
+   columns. The card is the collection; not six identical tiles */
+.sbp-ab-favs{background:var(--paper);border:2px solid var(--ink);border-radius:6px;padding:32px 28px;
+  box-shadow:8px 8px 0 var(--cyan)} /* taste-skill-ignore: taped index card */
+.sbp-ab-favs ul{list-style:none;margin:0;padding:0;display:grid;gap:20px 34px;grid-template-columns:1fr}
+@media(min-width:780px){.sbp-ab-favs ul{grid-template-columns:1fr 1fr}}
+.sbp-ab-favs li{display:grid;grid-template-columns:46px 1fr;column-gap:15px;align-items:start}
+.sbp-ab-favs b{display:block;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:26px;line-height:1.05}
+.sbp-ab-favs em{display:block;margin-top:2px;font-style:normal;font-size:15.5px;line-height:1.4;color:var(--ink)}
+.sbp-ab-dots{display:flex;gap:8px;margin-top:8px}
+.sbp-ab-dots i{width:24px;height:24px;border-radius:50%;border:2px solid var(--ink)}
+
+/* 3 — things i love doing: five pasted cards, an icon chip and the doing
+   written on them, the cadence at the foot. The tilt is the reference's; the
+   chip alternates blue and pale blue so the row has a rhythm instead of five
+   identical tiles */
+/* cards keep their own height, the way stuck-on paper does: the row aligns at
+   the top and the bottoms stay ragged, instead of every tile the same box */
+.sbp-ab-loves{list-style:none;margin:0;padding:0;display:grid;align-items:start;gap:34px 26px;grid-template-columns:1fr}
+@media(min-width:600px){.sbp-ab-loves{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:960px){.sbp-ab-loves{grid-template-columns:repeat(4,1fr)}}
+.sbp-ab-love{display:flex;flex-direction:column;gap:14px;padding:20px 20px 20px;
+  background:var(--paper);border:2px solid var(--ink);border-radius:10px;
+  box-shadow:6px 6px 0 var(--acc); /* taste-skill-ignore: reference sticker shadow */
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1),rotate .35s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
+.sbp-ab-love .sbp-ab-ic{width:42px;height:42px;border-radius:11px}
+.sbp-ab-love .sbp-ab-ic svg{width:22px;height:22px}
+.sbp-ab-love:nth-child(even) .sbp-ab-ic{background:var(--cyan);color:var(--ink)}
+.sbp-ab-love h3{margin:0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:25px;line-height:1.14}
+.sbp-ab-when{display:block;padding-top:2px;
+  font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:19px;line-height:1.15;color:var(--mute)}
+@media(hover:hover) and (pointer:fine){
+  .sbp-ab-love:hover{rotate:0deg;transform:translate(-2px,-3px);box-shadow:9px 9px 0 var(--cyan)} /* taste-skill-ignore */
+  .sbp-ab-love:hover .sbp-ab-ic{transform:rotate(-10deg) scale(1.08)}
+}
+@media(max-width:560px){
+  .sbp-ab-love{flex-direction:row;flex-wrap:wrap;align-items:center;column-gap:14px;padding:16px 16px 16px}
+  .sbp-ab-love h3{flex:1 1 60%;font-size:23px}
+  .sbp-ab-when{flex:1 0 100%;padding-top:0}
+}
+
+/* 4 — random facts: tap to flip */
+.sbp-ab-facts{display:grid;gap:26px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.sbp-ab-flip{height:190px;perspective:900px;border:0;background:none;padding:0;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.sbp-ab-fi{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.34,1.3,.5,1)}
+.sbp-ab-flip[aria-pressed="true"] .sbp-ab-fi{transform:rotateY(180deg)}
+.sbp-ab-ff,.sbp-ab-fb{position:absolute;inset:0;overflow:hidden;-webkit-backface-visibility:hidden;backface-visibility:hidden;
+  border:2px solid var(--ink);border-radius:8px;padding:18px 20px;display:flex;flex-direction:column;justify-content:space-between}
+.sbp-ab-ff{background:var(--paper);justify-content:center;gap:10px;box-shadow:5px 5px 0 var(--acc)} /* taste-skill-ignore */
+.sbp-ab-fb{background:var(--acc);color:#fff;transform:rotateY(180deg);box-shadow:5px 5px 0 var(--ink)} /* taste-skill-ignore */
+.sbp-ab-ff b{font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:27px;line-height:1.05}
+.sbp-ab-fb p{margin:0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:22px;line-height:1.2}
+.sbp-ab-ff em{font-size:13px;font-style:normal;color:var(--acc)}
+.sbp-ab-fb small{color:rgba(255,255,255,.78)}
+
+/* 5 — the goals, all five on one to-do sheet */
+/* one plain sheet rather than five cards, so the ticks read as a list you keep */
+.sbp-ab-sheet{background-color:var(--paper);border:2px solid var(--ink);border-radius:6px;padding:34px 30px 26px;max-width:900px;
+  box-shadow:8px 8px 0 var(--acc)} /* taste-skill-ignore: kept-paper sheet */
+.sbp-ab-sheet-in{margin:0 0 10px;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:23px;line-height:34px;max-width:58ch}
+.sbp-ab-count{margin:0 0 24px;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:23px;line-height:1;color:var(--acc)}
+.sbp-ab-deal{margin:0 0 22px}
+.sbp-ab-deal:last-child{margin-bottom:0}
+.sbp-ab-deal-hd{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:2px}
+.sbp-ab-deal-hd small{white-space:nowrap}
+.sbp-ab-deal h3{margin:0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:27px;line-height:1.12}
+.sbp-ab-deal ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+@media(min-width:680px){.sbp-ab-deal ul{grid-template-columns:1fr 1fr;gap:0 24px}}
+.sbp-ab-chk{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;padding:7px 0;cursor:pointer;
+  font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:22px;line-height:1.2;color:var(--ink);text-align:left}
+.sbp-ab-bx{flex:none;width:23px;height:23px;border:2px solid var(--ink);border-radius:5px;display:grid;place-items:center;
+  transition:background .2s,transform .3s cubic-bezier(.34,1.56,.64,1)}
+.sbp-ab-bx svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .3s ease}
+.sbp-ab-chk:hover .sbp-ab-bx{border-color:var(--acc)}
+.sbp-ab-chk[aria-pressed="true"] .sbp-ab-bx{background:var(--acc);transform:rotate(-6deg) scale(1.12)}
+.sbp-ab-chk[aria-pressed="true"] .sbp-ab-bx svg{stroke-dashoffset:0}
+.sbp-ab-chk[aria-pressed="true"] span{text-decoration:line-through;color:var(--mute)}
+
+/* 6 — memories: a film strip you drag sideways */
+.sbp-ab-film{position:relative;background:var(--ink);border-radius:6px;box-shadow:6px 6px 0 var(--cyan)} /* taste-skill-ignore */
+.sbp-ab-film::before,.sbp-ab-film::after{content:"";position:absolute;left:0;right:0;height:14px;pointer-events:none;opacity:.92;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='14'%3E%3Crect x='4' y='3' width='20' height='8' rx='2' fill='%23FAF7F2'/%3E%3C/svg%3E");
+  background-size:28px 14px;background-repeat:repeat-x}
+.sbp-ab-film::before{top:8px}
+.sbp-ab-film::after{bottom:8px}
+/* a contact sheet inside the strip, not a sideways scroller: every frame stays
+   inside the page instead of being cut at the edge */
+.sbp-ab-fs{display:grid;gap:26px;padding:38px 22px}
+@media(min-width:600px){.sbp-ab-fs{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:920px){.sbp-ab-fs{grid-template-columns:repeat(3,1fr)}}
+.sbp-ab-mem{width:auto}
+.sbp-ab-memline{display:block;margin:7px 1px 0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;
+  font-size:17px;line-height:1.2;color:rgba(10,10,10,.66);text-align:center}
+
+/* 7 — the personal corner: a wide spread, not a stack. The quote holds the
+   left and is the largest thing in the section; the letter sits across the
+   gutter, and each column runs on below so the four pieces never line up
+   into rows */
+.sbp-ab-cg{display:grid;gap:30px;grid-template-columns:1fr}
+.sbp-ab-cg-col{display:grid;gap:30px;align-content:start;min-width:0}
+@media(min-width:820px){
+  .sbp-ab-cg{grid-template-columns:1.04fr .96fr;column-gap:34px;row-gap:0}
+  /* the envelope's stage keeps its upper half empty so the letter can rise into
+     it, which would leave the closed letter reading a column late: pull the
+     stage up by that dead space, so the envelope's face sits just under the
+     quote's top and the open letter still lands clear of the sub-line */
+  .sbp-ab-cg-col + .sbp-ab-cg-col > .sbp-ab-env{margin-top:clamp(-96px,-5.4vw,-44px)}
+}
+.sbp-ab-qcard{background:var(--acc);color:#fff;border:2px solid var(--ink);border-radius:6px;
+  padding:24px 30px 30px;display:flex;flex-direction:column;gap:20px;align-items:flex-start;
+  box-shadow:6px 6px 0 var(--ink)} /* taste-skill-ignore: pasted card */
+@media(min-width:820px){.sbp-ab-qcard{min-height:clamp(215px,20vw,265px)}}
+.sbp-ab-qhd{display:flex;align-items:center;gap:14px}
+/* the mark drawn to size: a serif quote glyph is only a few pixels tall at any
+   sane font size, and a scaled one would lay its own box over the quote below */
+.sbp-ab-qm{display:block;width:34px;height:26px;flex:none;color:rgba(255,255,255,.5);
+  fill:currentColor;pointer-events:none}
+.sbp-ab-qcard small{color:rgba(255,255,255,.82)}
+.sbp-ab-qcard p{margin:0;font-family:'Instrument Serif',Georgia,serif;
+  font-size:clamp(1.75rem,2.85vw,2.5rem);line-height:1.06;letter-spacing:-.02em;text-wrap:balance}
+.sbp-ab-env{position:relative;display:block;width:100%;height:280px;perspective:700px;
+  border:0;background:none;padding:0;cursor:pointer;color:inherit;font:inherit;text-align:center}
+.sbp-ab-evb{position:absolute;left:0;right:0;bottom:0;height:144px;background:var(--cyan);border:2px solid var(--ink);border-radius:6px;
+  box-shadow:5px 5px 0 var(--ink); /* taste-skill-ignore */
+  z-index:3;display:grid;place-content:end center;padding-bottom:14px}
+.sbp-ab-evb b{font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:27px;line-height:1}
+.sbp-ab-evb small{font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:19px;color:var(--ink)}
+.sbp-ab-flap{position:absolute;left:0;right:0;bottom:78px;height:66px;background:var(--acc);z-index:5;
+  clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .6s ease}
+.sbp-ab-lt{position:absolute;left:16px;right:16px;bottom:12px;height:124px;overflow:hidden;z-index:2;text-align:left;
+  background-color:var(--paper);border:2px solid var(--ink);padding:14px 16px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='26' viewBox='0 0 4 26' preserveAspectRatio='none'%3E%3Crect y='24.5' width='4' height='1.5' fill='%23E4DFD6'/%3E%3C/svg%3E");
+  background-size:100% 26px;background-position:0 18px;
+  transition:transform .8s cubic-bezier(.34,1.3,.5,1) .25s}
+.sbp-ab-lt p{margin:0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:21px;line-height:26px}
+.sbp-ab-env.on .sbp-ab-flap{transform:rotateX(180deg);z-index:1}
+.sbp-ab-env.on .sbp-ab-lt{transform:translateY(-136px);z-index:4}
+.sbp-ab-lines{padding-top:24px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='33' viewBox='0 0 4 33' preserveAspectRatio='none'%3E%3Crect y='31.5' width='4' height='1.5' fill='%23E4DFD6'/%3E%3C/svg%3E");
+  background-size:100% 33px;background-position:0 28px}
+.sbp-ab-lines p{margin:0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:24px;line-height:33px}
+.sbp-ab-sticky{background:var(--cyan);padding:34px 28px 30px;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 26px),calc(100% - 26px) 100%,0 100%)}
+/* on the spread the note keeps paper's habit of writing at the top and leaving
+   the rest blank, which also carries it far enough down to meet the left column */
+@media(min-width:820px){.sbp-ab-sticky{padding-bottom:76px}}
+.sbp-ab-sticky p{margin:8px 0 0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;
+  font-size:clamp(26px,2.6vw,30px);line-height:1.06}
+.sbp-ab-pin{position:absolute;top:12px;left:50%;margin-left:-8px;width:16px;height:16px;border-radius:50%;
+  background:var(--acc);border:2px solid var(--ink)}
+
+/* 8 — the soundtrack */
+.sbp-ab-pl{display:grid;gap:30px;grid-template-columns:1fr}
+@media(min-width:860px){.sbp-ab-pl{grid-template-columns:.85fr 1.15fr;align-items:start}}
+.sbp-ab-deck{text-align:center;padding:26px 22px 22px}
+.sbp-ab-vinyl{position:relative;display:block;width:min(220px,62%);aspect-ratio:1;margin:0 auto 18px}
+.sbp-ab-vinyl svg{width:100%;height:100%;fill:none;stroke:#2F2F2F;stroke-width:1.5;
+  animation:sbp-spin 6s linear infinite;animation-play-state:paused}
+.sbp-ab-vinyl .sheen{stroke:#7A7A7A;stroke-width:3.6;stroke-linecap:round}
+.sbp-ab-vinyl .label{fill:var(--acc);stroke:var(--ink);stroke-width:2}
+.sbp-ab-vinyl .hole{fill:var(--paper);stroke:var(--ink);stroke-width:2}
+.sbp-ab-deck.on .sbp-ab-vinyl svg{animation-play-state:running}
+.sbp-ab-deck h3{margin:0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:29px;line-height:1.05}
+.sbp-ab-deck .sbp-ab-trk-sub{font-size:15px;letter-spacing:.02em;text-transform:none;color:var(--mute)}
+.sbp-ab-bar{height:10px;border:2px solid var(--ink);border-radius:99px;overflow:hidden;margin:16px 0}
+.sbp-ab-bar i{display:block;height:100%;background:var(--acc)}
+.sbp-ab-ctl{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap}
+.sbp-ab-ctl button{border:2px solid var(--ink);background:var(--paper);border-radius:999px;padding:6px 17px;cursor:pointer;
+  font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:22px;line-height:1;
+  box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s} /* taste-skill-ignore */
+.sbp-ab-ctl button:hover:not(:disabled){transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--acc)} /* taste-skill-ignore */
+.sbp-ab-ctl button:active:not(:disabled){transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)} /* taste-skill-ignore */
+.sbp-ab-ctl button:disabled{opacity:.4;cursor:default;box-shadow:none}
+.sbp-ab-ctl button.go{background:var(--acc);color:#fff;min-width:94px}
+.sbp-ab-eq{display:flex;gap:4px;align-items:flex-end;height:18px;justify-content:center;margin-top:14px}
+.sbp-ab-eq i{width:4px;height:30%;background:var(--acc);animation:sbp-abeq .9s ease-in-out infinite alternate;animation-play-state:paused}
+.sbp-ab-eq i:nth-child(2){animation-delay:-.3s}
+.sbp-ab-eq i:nth-child(3){animation-delay:-.6s}
+.sbp-ab-eq i:nth-child(4){animation-delay:-.15s}
+.sbp-ab-deck.on .sbp-ab-eq i{animation-play-state:running}
+@keyframes sbp-abeq{to{height:100%}}
+.sbp-ab-hint{margin:14px 0 0;font-size:13.5px;line-height:1.45;color:var(--mute)}
+.sbp-ab-trk{display:grid;grid-template-columns:26px 1fr auto;gap:14px;align-items:center;width:100%;text-align:left;
+  padding:11px 16px;margin-bottom:10px;border:2px dashed var(--line);border-radius:14px;cursor:pointer;color:inherit;font:inherit;
+  background:color-mix(in srgb,var(--paper) 70%,transparent);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),border-color .2s,background .2s}
+.sbp-ab-trk:hover{transform:translateX(6px);border-color:var(--acc)}
+.sbp-ab-trk.on{border:2px solid var(--ink);background:var(--cyan)}
+.sbp-ab-k{position:relative;width:24px;height:24px;border-radius:50%;border:2px solid var(--ink);background:var(--paper)}
+.sbp-ab-k::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--acc)}
+.sbp-ab-trk b{display:block;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:24px;line-height:1}
+.sbp-ab-trk small{font-size:13.5px;color:var(--mute)}
+.sbp-ab-trk em{font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:19px;line-height:1;
+  font-style:normal;white-space:nowrap;border:2px solid var(--ink);border-radius:999px;padding:3px 11px;background:var(--paper)}
+
+/* 9 — photo of the day */
+.sbp-ab-potd{display:grid;gap:40px;align-items:center;grid-template-columns:1fr}
+@media(min-width:820px){.sbp-ab-potd{grid-template-columns:.85fr 1.15fr}}
+.sbp-ab-big{position:relative;width:min(380px,92%);margin:0 auto;padding:12px 12px 10px;background:#fff;color:#0a0a0a;
+  rotate:-2.5deg;box-shadow:0 22px 36px -20px var(--shadow),0 0 0 1px rgba(10,10,10,.08)} /* taste-skill-ignore: kept print */
+.sbp-ab-big figcaption{margin:9px 0 0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;
+  font-size:25px;line-height:1.1;text-align:center}
+.sbp-ab-stamp{position:absolute;right:-14px;top:-16px;width:84px;height:84px;border-radius:50%;background:var(--paper);
+  border:3px double var(--acc);color:var(--acc);display:grid;place-content:center;text-align:center;rotate:12deg;
+  font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:17px;line-height:1.05}
+.sbp-ab-stamp b{display:block;font-family:'Instrument Serif',Georgia,serif;font-weight:400;
+  font-size:26px;line-height:1;letter-spacing:-.02em}
+.sbp-ab-info dl{margin:0 0 18px;display:grid;gap:10px}
+@media(min-width:520px){.sbp-ab-info dl{grid-template-columns:1fr 1fr}}
+.sbp-ab-info dt{font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:19px;line-height:1.1;color:var(--mute)}
+.sbp-ab-info dd{margin:2px 0 0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:25px;line-height:1.05}
+.sbp-ab-story{margin:0 0 22px;padding-left:16px;border-left:3px solid var(--cyan);
+  font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:24px;line-height:1.28}
+
+/* 10 — currently into */
+/* bare entries: an icon, the label, the thing itself — no card chrome */
+.sbp-ab-now{list-style:none;margin:0;padding:0;display:grid;gap:32px 22px;grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+.sbp-ab-nowi small{display:flex;align-items:center;gap:8px;margin:0 0 4px}
+.sbp-ab-nowi small::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--acc)}
+.sbp-ab-nowi p{margin:0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:24px;line-height:1.12}
+
+/* the close */
+.sbp-ab-end{text-align:center;padding:20px 0 10px}
+.sbp-ab-end .sbp-sp{display:inline-block;width:22px;height:22px;fill:var(--acc);margin:0 10px;animation:sbp-bob 6s ease-in-out infinite}
+.sbp-ab-quote{max-width:22ch;margin:16px auto 26px;font-family:'Instrument Serif',Georgia,serif;
+  font-size:clamp(1.7rem,4.6vw,2.9rem);line-height:1.14;letter-spacing:-.03em;transition:opacity .3s}
+.sbp-ab-quote.out{opacity:0}
+.sbp-ab-end small{display:block;margin-top:26px;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;
+  font-size:19px;letter-spacing:.02em;color:var(--mute)}
+
+/* the tilted cards keep their hover transitions after the reveal takes over the
+   shorthand: opacity and translate land first, transform and rotate stay ready */
+@media (prefers-reduced-motion:no-preference){
+  .sbp.js .sbp-ab-t[data-r]{transition-property:opacity,translate,transform,rotate;
+    transition-duration:600ms,700ms,350ms,350ms;
+    transition-timing-function:ease,cubic-bezier(.34,1.3,.5,1),cubic-bezier(.34,1.56,.64,1),cubic-bezier(.34,1.56,.64,1);
+    transition-delay:calc(var(--i,0)*70ms),calc(var(--i,0)*70ms),0ms,0ms}
+}
+@media (prefers-reduced-motion:reduce){
+  .sbp-ab-vinyl svg,.sbp-ab-eq i,.sbp-ab-end .sbp-sp,.sbp-ab-cup .steam path{animation:none}
+  .sbp-ab-cup .steam path{opacity:.7}
+  .sbp-ab-fi,.sbp-ab-flap,.sbp-ab-lt,.sbp-ab-bx,.sbp-ab-lt p,.sbp-ab-bar i,.sbp-ab-quote,.sbp-ab-cup,.sbp-ab-cup b{transition:none;animation:none}
+}
+@media (max-width:560px){
+  .sbp-ab-note{--abl:32px;padding:26px 18px 22px 44px}
+  .sbp-ab-note::before{left:30px}
+  .sbp-ab-sheet{padding:28px 18px 22px}
+  .sbp-ab-flip{height:176px}
+  .sbp-ab-big{width:100%}
+}
+
+/* ---------- reveal: hidden state only under .sbp.js + no-preference.
+   opacity + translate only: rest rotations live on `rotate`, hover and pointer-tilt
+   on `transform`, so neither is overridden after the reveal. ---------- */
+@media (prefers-reduced-motion:no-preference){
+  .sbp.js [data-r]{
+    opacity:0;
+    translate:0 20px;
+    transition:opacity .6s ease, translate .7s cubic-bezier(.34,1.3,.5,1);
+    transition-delay:calc(var(--i,0)*70ms);
+  }
+  .sbp.js [data-r].sbp-is-in{opacity:1;translate:0 0}
+  .sbp.js .sbp-pol[data-r].sbp-is-in{transform:rotate(var(--r))}
+  @media(min-width:760px){
+    .sbp.js .sbp-ent.l[data-r]{translate:-36px 20px}
+    .sbp.js .sbp-ent.r[data-r]{translate:36px 20px}
+    .sbp.js .sbp-ent[data-r].sbp-is-in{opacity:1;translate:0 0}
+  }
+  .sbp.js .sbp-stamp{opacity:0;transform:rotate(-12deg) scale(1.6);transition:transform .5s cubic-bezier(.34,1.56,.64,1) .5s,opacity .3s ease .5s}
+  .sbp.js .sbp-is-in .sbp-stamp{opacity:.85;transform:rotate(-12deg)}
+  .sbp.js .sbp-darr path{stroke-dasharray:150;stroke-dashoffset:150;transition:stroke-dashoffset 1s ease .5s}
+  .sbp.js .sbp-is-in .sbp-darr path{stroke-dashoffset:0}
+}
+@media (prefers-reduced-motion:reduce){
+  .sbp-blob,.sbp-doodle,.sbp-track,.sbp-sprk svg,.sbp-page,
+  .sbp-scrim,.sbp-top.is-open nav,.sbp-wa-swirl,.sbp-wa-stars{animation:none}
+  .sbp-top nav a,.sbp-brand img,.sbp-burger span{transition:none}
+  .sbp-mark::before,.sbp-squig path{transition:none;transform:none;stroke-dashoffset:0}
+  /* the book still opens, it just arrives open instead of turning */
+  .sbp-bk,.sbp-bk-leaf,.sbp-bk-bd.l,.sbp-bk-btn{transition:none}
+  .sbp-bk-leaf.moving .sbp-bk-face::after{animation:none}
+  .sbp-bk-wphoto,.sbp-bk-spark{animation:none}
+}
+@media (max-width:560px){
+  .sbp{--lh:32px;--fs:23px}
+  .sbp-strip{margin-inline:-24px}
+}

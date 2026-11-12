@@ -1,0 +1,132 @@
+/* personal-corner.css — “My personal corner” on the Things About Me page.
+   Ported from reference files/scrapbook/scrapbook/scrapbook-personal-corner.css:
+   the four cards (quote blue card, lined learning card, envelope with flap, tilted
+   sticky note with pin), plus the decorative background dot grid and four-pointed
+   star. Classes renamed sb-pc- -> sbp-pc- and tokens swapped to the site palette
+   (paper/ink/mute/acc/cyan). Fraunces -> Instrument Serif, mono -> Inter, washi tape
+   -> the site butter, dot grid -> the site’s own dot grid was reused so it does not
+   need a separate layer.
+   Layout: on a phone the four cards stack; on desktop the quote and the lined card
+   share the left column, the envelope and the sticky note share the right column, with
+   the envelope pulled up into the blue card’s top so the block reads as two matched
+   halves rather than a stack of four. */
+
+/* section style for this part of the page — keep the same serif title treatment as
+   the rest of the about page */
+.sbp-pc-sec{margin:0 0 clamp(80px,10vw,140px);scroll-margin-top:96px}
+.sbp-pc-sec h2{margin:0}
+
+/* the four-pointed sparkle used as decoration in the page quadrant */
+.sbp-pc-spark{position:absolute;width:18px;height:18px;color:var(--acc);fill:var(--acc);opacity:.55;pointer-events:none}
+.sbp-pc-spark.a{top:12%;right:6%;animation-duration:7s}
+.sbp-pc-spark.b{bottom:8%;right:14%;width:14px;height:14px;animation-duration:11s;animation-delay:-3s}
+@keyframes sbp-pc-spark{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-8px) rotate(90deg)}}
+
+/* shared card look: each pasted piece keeps its own painted border and shadow. The
+   dot grid lives on the body already, so these cards sit on that grid without a second
+   dot layer of their own. */
+.sbp-pc-t{position:relative;rotate:var(--r,0deg)}
+.sbp-pc-when{display:block;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:19px;line-height:1.15;color:var(--mute);margin:8px 0 0}
+
+/* 1 — quote card: solid blue body, large serif quote, smaller handwritten label above */
+.sbp-pc-qcard{background:var(--acc);color:#fff;border:2px solid var(--ink);border-radius:8px;
+  padding:26px 30px 34px;display:flex;flex-direction:column;gap:22px;align-items:flex-start;
+  box-shadow:6px 6px 0 var(--ink)} /* taste-skill-ignore: reference sticker shadow */
+.sbp-pc-qlabel{display:block;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:19px;line-height:1.2;color:rgba(255,255,255,.8)}
+.sbp-pc-quote{margin:0;font-family:'Instrument Serif',Georgia,serif;font-weight:400;
+  font-size:clamp(1.7rem,2.8vw,2.4rem);line-height:1.1;letter-spacing:-.02em;text-wrap:balance}
+
+/* 2 — lined writing card: white paper with ruled lines, label at the top, three
+   handwritten lines beneath */
+.sbp-pc-lined{background-color:#fff;border:2px solid var(--ink);border-radius:8px;padding:26px 30px 30px;
+  box-shadow:6px 6px 0 var(--ink)} /* taste-skill-ignore */
+.sbp-pc-lined small{display:block;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:19px;line-height:1.2;color:var(--mute);margin:0 0 18px}
+.sbp-pc-lined hr{border:none;border-top:2px dashed var(--line);margin:0 0 18px}
+.sbp-pc-lined p{margin:0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:22px;line-height:32px;color:var(--ink)}
+/* placeholder pills for an empty, fill-in-the-blank version of this card */
+.sbp-pc-fill{display:inline-flex;align-items:center;gap:8px;border:1.5px dashed var(--acc);border-radius:999px;
+  padding:5px 12px;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:18px;line-height:1;color:var(--acc);
+  background:transparent;cursor:pointer;margin-right:auto}
+.sbp-pc-fill:hover{border-style:solid;color:var(--ink)}
+
+.sbp-pc-env{position:relative;display:block;width:100%;height:330px;perspective:700px;
+  border:0;background:none;padding:0;cursor:pointer;color:inherit;font:inherit;text-align:center;
+  transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
+.sbp-pc-env:hover{transform:translateY(-3px)}
+@media(hover:hover) and (pointer:fine){.sbp-pc-env:focus-visible{outline:3px solid var(--acc);outline-offset:4px;border-radius:8px}}
+/* Envelope pocket/front stays above the paper at all times. This creates a real
+   cutout illusion: the note can slide up from inside, while its lower edge stays tucked
+   behind the envelope and never covers the label. */
+.sbp-pc-evb{position:absolute;left:0;right:0;bottom:0;height:180px;background:var(--cyan);
+  border:2px solid var(--ink);border-radius:6px;box-shadow:5px 5px 0 var(--ink); /* taste-skill-ignore */
+  z-index:3;display:grid;place-content:end center;padding-bottom:14px}
+/* the flap folded down over the pocket’s mouth, wide edge on the pocket’s top edge */
+.sbp-pc-flap{position:absolute;left:0;right:0;bottom:100px;height:80px;background:var(--acc);
+  clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .6s ease;z-index:5}
+.sbp-pc-env.on .sbp-pc-flap{transform:rotateX(180deg);z-index:1}
+/* The letter starts deep in the pocket. On open, it glides upward with a tiny tilt,
+   while the opaque front panel masks the lower portion just like a real envelope. */
+.sbp-pc-letter{position:absolute;left:16px;right:16px;bottom:12px;height:164px;background:var(--paper);
+  border:2px solid var(--ink);padding:12px 16px;z-index:2;overflow:hidden;text-align:left;
+  transform:translateY(0) rotate(0deg);
+  transform-origin:50% 100%;
+  box-shadow:0 2px 0 rgba(30,35,45,.08);
+  transition:transform .9s cubic-bezier(.22,1,.36,1) .16s, box-shadow .7s ease .16s;
+  background-image:repeating-linear-gradient(transparent 0 25px,var(--line) 25px 26px)}
+.sbp-pc-env.on .sbp-pc-letter{transform:translateY(-142px) rotate(-1.2deg);box-shadow:0 10px 22px rgba(30,35,45,.14)}
+.sbp-pc-letter p{margin:0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:21px;line-height:26px;color:var(--ink)}
+/* the label printed on the pocket: “tap to open”, then the title */
+.sbp-pc-evlabel{display:grid;gap:7px;justify-items:center;text-align:center}
+.sbp-pc-evlabel small{font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:18px;line-height:1;color:var(--mute)}
+.sbp-pc-evlabel b{font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:26px;line-height:1;color:var(--ink)}
+
+/* 4 — sticky note: pale blue card tilted a few degrees, a small pin dot at the top,
+   label at the top-left, handwritten reminder written bigger beneath. The bottom-right
+   corner is tucked under itself for a torn-poster look. */
+.sbp-pc-sticky{position:relative;background:var(--cyan);border:2px solid var(--ink);border-radius:4px 12px 12px 4px;
+  padding:32px 28px 30px;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 24px),calc(100% - 24px) 100%,0 100%);
+  /* the torn corner is a clip-path, and box-shadow would be clipped away with it, so
+     the offset shadow is drawn as a drop-shadow: that follows the clipped silhouette
+     instead of the rectangle, keeping the ink bar all the way round the notch */
+  filter:drop-shadow(6px 6px 0 var(--ink))}
+.sbp-pc-sticky small{display:block;font-family:Caveat,"Comic Sans MS",cursive;font-weight:500;font-size:19px;line-height:1.2;color:var(--ink);margin-bottom:10px}
+.sbp-pc-sticky p{margin:0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:clamp(26px,2.6vw,30px);line-height:1.05;color:var(--ink)}
+.sbp-pc-pin{position:absolute;top:12px;left:50%;width:16px;height:16px;border-radius:50%;
+  background:var(--acc);border:2px solid var(--ink);transform:translateX(-50%)}
+
+/* the spread: on desktop the quote + lined card sit on the left and the envelope +
+   sticky note sit on the right. The envelope is pulled up so its face aligns with the
+   top of the quote card; the right column then runs long below it. */
+.sbp-pc-cols{display:grid;gap:30px;grid-template-columns:1fr}
+@media(min-width:880px){
+  .sbp-pc-cols{grid-template-columns:1.04fr .96fr;column-gap:34px}
+  /* the two left pieces keep a column rhythm */
+  .sbp-pc-cols > .sbp-pc-col > .sbp-pc-t:not(.sbp-pc-env){display:flex;flex-direction:column}
+}
+.sbp-pc-col{display:flex;flex-direction:column;gap:26px;align-content:start}
+.sbp-pc-t:not(.sbp-pc-env){min-width:0}
+
+/* entry points: the page reveal classes */
+.sbp-pc-is-in .sbp-pc-t{transform:translateY(0)}
+.sbp.js .sbp-pc-t{opacity:0;transform:translateY(22px);
+  transition:opacity .6s ease,transform .7s cubic-bezier(.34,1.3,.5,1)}
+.sbp.js .sbp-pc-t.sbp-pc-is-in{opacity:1;transform:none}
+.sbp.js .sbp-pc-is-in .sbp-pc-t{opacity:1;transform:none}
+
+/* one tiny dot-grid recap sheet pinned to this page’s section only, so the reference’s
+   “dot grid background” reads correctly here too. The site body already carries a global
+   grid; this is the section-level recap the reference uses right behind these cards. */
+.sbp-pc-recap{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='2' cy='2' r='1.4' fill='%23D8D1C4'/%3E%3C/svg%3E");
+  background-size:22px 22px;opacity:.4}
+@media(max-width:560px){
+  /* phones: drop the dot recap so it does not fight the navbar highlight */
+  .sbp-pc-recap{display:none}
+}
+
+/* The little paper lift should feel tactile, not springy. Keep the whole interaction
+   usable for visitors who prefer reduced motion. */
+@media(prefers-reduced-motion:reduce){
+  .sbp-pc-env,.sbp-pc-flap,.sbp-pc-letter{transition:none!important}
+}
