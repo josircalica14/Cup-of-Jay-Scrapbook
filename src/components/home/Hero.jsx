@@ -90,7 +90,7 @@ export default function Hero() {
             <svg className="tw" style={{ left: 214, top: 410, width: 14, height: 14, '--dl': '.7s', fill: 'url(#chrome)', stroke: 'var(--line)', strokeWidth: 0.5 }}><Spark /></svg>
 
             <div className="layer" style={{ '--d': 10, left: 50, top: 34 }}>
-              <div className="float"><HeroPolaroid src="/jay.jpg" caption="Yep, That's me!" date="Teal suit · 0 bugs · 1 bow tie" /></div>
+              <div className="float"><HeroPolaroid caption="Yep, That's me!" date="Teal suit · 0 bugs · 1 bow tie" /></div>
             </div>
 
             <div className="layer" style={{ '--d': 22, left: -8, top: 332 }}>

@@ -1,8 +1,12 @@
 import { useState } from 'react'
 
 /* Your picture lives at public/jay.jpg (swap in a higher-res original any time).
-   If the file is missing, the little illustration shows instead. */
-export default function HeroPolaroid({ src = '/jay.jpg', caption, date }) {
+   If the file is missing, the little illustration shows instead.
+   BASE_URL is "/" locally and on Vercel, and the site's subpath on GitHub Pages, so the
+   photo keeps loading wherever the site is served from. */
+const PHOTO = `${import.meta.env.BASE_URL}jay.jpg`
+
+export default function HeroPolaroid({ src = PHOTO, caption, date }) {
   const [broken, setBroken] = useState(false)
   return (
     <div className="polaroid">
