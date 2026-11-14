@@ -707,7 +707,9 @@ body {
 }
 
 /* ── hero responsive ── */
-@media (max-width: 1020px) {
+/* the stage is a fixed 460px composition, so it has to scale down before the hero's
+   right column gets narrower than that — otherwise the cup is cut by the page edge */
+@media (max-width: 1140px) {
   .stage {
     --sc: 0.86;
   }
