@@ -96,7 +96,7 @@ export default function Guestbook() {
                 className="sb-sticker rounded-full px-5 py-2 text-sm"
               >
                 <span className="font-medium">{s.platform}</span>{' '}
-                <span className="text-ink/60">{s.handle}</span>
+                <span className="text-ink/70">{s.handle}</span>
               </a>
             ))}
           </div>
@@ -115,7 +115,7 @@ export default function Guestbook() {
               >
                 <span className="sb-tape" style={{ top: -10, left: '50%', marginLeft: -39, transform: `rotate(${i % 2 ? -3 : 2}deg)` }} aria-hidden="true" />
                 <p className="font-hand text-[26px] leading-tight">{e.message}</p>
-                <p className="text-[13px] text-ink/60 mt-2">{e.name} · {e.timestamp}</p>
+                <p className="text-[13px] text-ink/70 mt-2">{e.name} · {e.timestamp}</p>
               </li>
             ))}
           </ul>
