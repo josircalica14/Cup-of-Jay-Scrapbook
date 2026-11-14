@@ -27,7 +27,9 @@
 .sbp a{color:inherit}
 .sbp button{font:inherit;color:inherit}
 .sbp-hand{font-family:Caveat,"Comic Sans MS",cursive}
-.sbp :focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+/* the focus ring has to survive on paper, so it uses the accent (5.3:1) rather
+   than the pale decoration blue (1.9:1) */
+.sbp :focus-visible{outline:3px solid var(--acc);outline-offset:3px}
 
 /* ---------- decorative backdrop (no dots: the body carries the grid) ---------- */
 .sbp-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
@@ -146,6 +148,15 @@
 .sbp-chip:hover{transform:translateY(-2px) rotate(-2deg)}
 .sbp-chip[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .sbp-chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 32px}
+/* the same pill, used as a label instead of a control: no pointer, no hover lift */
+.sbp-chip--tag{cursor:inherit;font-size:10px;padding:1px 9px}
+.sbp-chip--tag:hover{transform:none}
+/* result count under the year filter — it was a silent state change before */
+.sbp-tl-count{margin:-22px 0 26px;font:600 11px/1.4 'Inter',system-ui,sans-serif;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--mute)}
+/* where an archive card leads: they are links, so they should say so */
+.sbp-to{display:inline-block;margin-top:8px;font:600 10px/1.4 'Inter',system-ui,sans-serif;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--acc);opacity:.85}
 
 /* lined notebook paper — the site's SVG data-URI ruling, sized to --lh */
 .sbp-lined{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='36' viewBox='0 0 4 36' preserveAspectRatio='none'%3E%3Crect y='34.5' width='4' height='1.5' fill='%23E4DFD6'/%3E%3C/svg%3E");
@@ -156,11 +167,13 @@
   box-shadow:0 16px 28px -16px var(--shadow),0 0 0 1px rgba(10,10,10,.07);
   transform:rotate(var(--r));transition:transform .45s cubic-bezier(.34,1.56,.64,1);cursor:pointer;border:0;text-align:left;width:100%;display:block} /* taste-skill-ignore */
 .sbp-pol:hover{transform:rotate(0) scale(1.04) translateY(-4px);z-index:2}
-.sbp-pol .sbp-shot{aspect-ratio:1/1;position:relative;overflow:hidden}
+/* the polaroid is a button, so its parts are spans: block-level children inside
+   a button are invalid markup and read inconsistently in screen readers */
+.sbp-pol .sbp-shot{display:block;aspect-ratio:1/1;position:relative;overflow:hidden}
 .sbp-shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
-.sbp-pol p{margin:7px 0 0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:21px;line-height:1;text-align:center}
+.sbp-pol-cap{display:block;margin:7px 0 0;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:21px;line-height:1;text-align:center}
 /* the pencil date in the white margin, like writing on the frame itself */
-.sbp-pol time{display:block;margin:5px 1px 0;font:600 10px/1.4 'Inter',system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb,#0a0a0a 48%,transparent);text-align:right;white-space:nowrap}
+.sbp-pol time{display:block;margin:5px 1px 0;font:600 10px/1.4 'Inter',system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb,#0a0a0a 74%,transparent);text-align:right;white-space:nowrap}
 
 /* ---------- archives: zigzag timeline ---------- */
 .sbp-tl{position:relative;padding:6px 0 10px 40px}
@@ -283,24 +296,26 @@
   font-size:24px;line-height:1;color:var(--mute)}
 .sbp-wall-end span{color:var(--acc);letter-spacing:.2em}
 
-/* the scrap sits in the empty half of the header row, taped beside the title,
-   at every width — sized down on phones so it never crowds the headline */
+/* A page header with a taped scrap beside it. The scrap used to be absolutely
+   positioned off a vw-based guess, so it drifted away from the headline on wide
+   screens and collided with it on narrow ones. As a flex row the note simply
+   sits a fixed gap past the title block, baseline-aligned with its last line. */
+.sbp-headrow{display:flex;align-items:flex-end;gap:clamp(18px,4vw,64px);flex-wrap:wrap}
+.sbp-headrow > .sbp-headtext{flex:1 1 auto;min-width:0}
 .sbp-snaphead{position:relative;--sbp-h1:clamp(2.4rem,7vw,4.2rem)}
-.sbp-wa-scrap{position:absolute;right:2px;top:12px;padding:7px 13px 8px;background:#fff;
+.sbp-wa-scrap{position:relative;margin:0 0 30px;padding:9px 15px 10px;background:#fff;
   border:1.5px dashed color-mix(in srgb,var(--ink) 30%,transparent);transform:rotate(-3.5deg);
   font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:16px;line-height:1;color:var(--ink)}
 .sbp-wa-scrap p{margin:0;white-space:nowrap}
 .sbp-wa-scrap .sbp-tape{top:-11px;left:50%;width:58px;height:18px;margin-left:-29px;transform:rotate(-3deg)}
 @media(min-width:640px){
-  /* track the title instead of the far edge: the note hangs a consistent gap
-     past the headline at every width, and never drifts right on wide screens */
-  .sbp-wa-scrap{right:auto;left:calc(var(--sbp-h1) * 5);top:48px;padding:11px 20px 12px;font-size:20px}
+  .sbp-wa-scrap{padding:11px 20px 12px;font-size:20px;margin-bottom:36px}
   .sbp-wa-scrap .sbp-tape{width:74px;height:22px;margin-left:-37px}
 }
-@media(max-width:360px){
-  /* smallest phones: the title runs wider, so the scrap shrinks to keep clear */
-  .sbp-wa-scrap{padding:6px 10px 7px;font-size:15px}
-  .sbp-wa-scrap .sbp-tape{width:50px;height:16px;margin-left:-25px}
+@media(max-width:520px){
+  /* on phones the note drops under the headline instead of squeezing it */
+  .sbp-wa-scrap{margin:0 0 22px;padding:7px 12px 8px;font-size:17px}
+  .sbp-wa-scrap .sbp-tape{width:54px;height:17px;margin-left:-27px}
 }
 
 /* the gutters only exist past ~1180px; below that the art would sit on the photos */
@@ -317,7 +332,7 @@
 .sbp-lb.on{display:grid;animation:sbp-pop .3s ease}
 .sbp-lb .sbp-pol{max-width:440px;cursor:default;--r:-2deg}
 .sbp-lb .sbp-pol:hover{transform:rotate(-2deg)}
-.sbp-lb .sbp-pol p{font-size:28px}
+.sbp-lb .sbp-pol-cap{font-size:28px}
 /* the viewer shows the whole frame, uncropped */
 .sbp-lb .sbp-shot.sbp-shot-full{aspect-ratio:auto;display:grid;place-items:center;background:#0a0a0a}
 .sbp-lb .sbp-shot-full img{width:auto;height:auto;max-width:100%;max-height:min(58vh,520px);object-fit:contain}

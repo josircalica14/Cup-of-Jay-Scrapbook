@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* self-hosted so the page paints without a third-party stylesheet */
+@font-face{font-family:'Caveat';font-style:normal;font-weight:500;font-display:swap;src:url('../assets/fonts/caveat-500.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Caveat';font-style:normal;font-weight:700;font-display:swap;src:url('../assets/fonts/caveat-700.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url('../assets/fonts/instrument-serif-400-italic.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;src:url('../assets/fonts/instrument-serif-400.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url('../assets/fonts/inter-400.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url('../assets/fonts/inter-500.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Inter';font-style:normal;font-weight:600;font-display:swap;src:url('../assets/fonts/inter-600.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+
+
 :root {
   color-scheme: light;
   padding-top: env(safe-area-inset-top, 0px);
@@ -21,7 +31,33 @@ body {
   color: #1f1f1f;
   font-family: 'Inter', system-ui, sans-serif;
   overflow-x: hidden;
-  user-select: none;
+}
+
+/* text stays selectable: people copy captions, guestbook notes and the letter.
+   Only the decorative art opts out, in section-art.css. */
+
+/* skip link: the nav is five tabs deep, so keyboard users get a way past it */
+.sbp-skip {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 200;
+  padding: 10px 16px;
+  border: 2px solid #1f1f1f;
+  border-radius: 999px;
+  background: #faf7f2;
+  color: #1f1f1f;
+  font: 600 14px/1 'Inter', system-ui, sans-serif;
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform .2s ease;
+}
+
+.sbp-skip:focus-visible,
+.sbp-skip:focus {
+  transform: translateY(0);
+  outline: 3px solid #3f5bd8;
+  outline-offset: 2px;
 }
 
 @keyframes eq {
@@ -54,6 +90,12 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .eq { animation: none; }
   html { scroll-behavior: auto; }
+}
+
+/* the reveal system hides content until it scrolls into view; printing and
+   any non-interactive capture have no observer to fire, so show everything */
+@media print {
+  [data-r], [data-reveal] { opacity: 1 !important; translate: none !important; animation: none !important; }
 }
 
 

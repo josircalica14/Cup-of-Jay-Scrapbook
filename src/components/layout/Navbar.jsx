@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import logo from '../../assets/logo.png'
+import logo from '../../assets/logo.webp'
 import { PAGES } from '../../data/pages'
 import '../../styles/pages.css'
 

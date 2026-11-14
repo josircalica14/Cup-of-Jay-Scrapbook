@@ -53,6 +53,7 @@ export const MEMORIES = [
   { d: 'Nov 2024', y: '2024', s: '2024-11-00', k: 'memory', t: 'First deploy that stuck', sub: 'It was a queue app. It worked on an actual jeepney.',     to: 'about' },
 ]
 
+/* SAMPLE content, used by the Things About Me page — replace with your own. */
 export const SONGS = [
   ['Jeepney Window Lo-fi', 'Rainy Jeepney FM'],
   ['Mango Season', 'Halo-Halo Harmonies'],

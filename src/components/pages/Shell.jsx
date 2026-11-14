@@ -10,7 +10,7 @@ export default function Shell({ page, children }) {
     <div className="sbp js">
       <Backdrop />
       <div className="sbp-page" key={page}>
-        <main className="max-w-[1080px] mx-auto px-5 pt-14 pb-10 min-h-[70vh]">{children}</main>
+        <main id="main" tabIndex={-1} className="max-w-[1080px] mx-auto px-5 pt-14 pb-10 min-h-[70vh]">{children}</main>
       </div>
       <footer>
         <div className="sbp-strip" aria-hidden="true">

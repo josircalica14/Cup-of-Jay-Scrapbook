@@ -30,8 +30,12 @@ export default function Guestbook() {
     }
   }, [entries])
 
+  /* one field at a time when only one is missing, so the message can name it */
   const submit = () => {
-    if (!name.trim() || !msg.trim()) { setErr('Please add a name and a message.'); return }
+    const missing = []
+    if (!name.trim()) missing.push('a name')
+    if (!msg.trim()) missing.push('a message')
+    if (missing.length) { setErr(`Please add ${missing.join(' and ')}.`); return }
     const ts = new Date().toISOString().slice(0, 16).replace('T', ' ')
     setEntries([{ name: name.trim(), message: msg.trim(), timestamp: ts }, ...entries])
     setName(''); setMsg(''); setErr('')
@@ -58,20 +62,26 @@ export default function Guestbook() {
 
           <div className="sb-sticker sb-paper p-7" style={{ "--r": "-0.8deg" }} data-reveal>
             <span className="sb-tape" style={{ top: -11, left: 34, transform: 'rotate(-4deg)' }} aria-hidden="true" />
-            <div className="grid gap-6">
+            {/* a real form: Enter submits, the browser marks empty fields, and the
+                error is announced through aria-describedby instead of floating free */}
+            <form className="grid gap-6" onSubmit={(e) => { e.preventDefault(); submit() }} noValidate={false}>
               <div>
                 <label htmlFor="gn" className={label}>Your name</label>
-                <input id="gn" value={name} onChange={e => setName(e.target.value)} className={field} placeholder="e.g. Mika" />
+                <input id="gn" value={name} onChange={e => setName(e.target.value)} className={field}
+                  placeholder="e.g. Mika" required maxLength={40} autoComplete="nickname"
+                  aria-invalid={err ? name.trim() === '' : undefined} aria-describedby={err ? 'gb-err' : undefined} />
               </div>
               <div>
                 <label htmlFor="gm" className={label}>Message</label>
-                <textarea id="gm" rows="3" value={msg} onChange={e => setMsg(e.target.value)} className={field + ' resize-none'} placeholder="say something kind…" />
+                <textarea id="gm" rows="3" value={msg} onChange={e => setMsg(e.target.value)} className={field + ' resize-none'}
+                  placeholder="say something kind…" required maxLength={400}
+                  aria-invalid={err ? msg.trim() === '' : undefined} aria-describedby={err ? 'gb-err' : undefined} />
               </div>
-              {err && <p role="alert" className="text-[#A2382B] font-hand text-xl">{err}</p>}
-              <button type="button" onClick={submit} className="sb-pill justify-self-start !bg-ink !text-paper !border-ink !px-6 !py-2.5">
+              {err && <p id="gb-err" role="alert" className="text-[#A2382B] font-hand text-xl">{err}</p>}
+              <button type="submit" className="sb-pill justify-self-start !bg-ink !text-paper !border-ink !px-6 !py-2.5">
                 Sign the page
               </button>
-            </div>
+            </form>
           </div>
 
           {/* Social stickers */}

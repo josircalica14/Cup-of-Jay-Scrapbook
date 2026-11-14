@@ -8,6 +8,7 @@ import Guestbook      from './components/home/Guestbook'
 
 import Shell          from './components/pages/Shell'
 import usePage        from './components/pages/usePage'
+import usePageMeta    from './hooks/usePageMeta'
 import Archives       from './components/pages/Archives'
 import Snapshots      from './components/pages/Snapshots'
 import DearDiary      from './components/pages/DearDiary'
@@ -19,7 +20,7 @@ import AboutPage      from './components/pages/AboutPage'
 function Home() {
   return (
     <>
-      <main>
+      <main id="main" tabIndex={-1}>
         <Hero />
         <About />
         <Moments />
@@ -41,10 +42,13 @@ const routes = {
 
 export default function App() {
   const page = usePage()
+  usePageMeta(page)
   const Page = routes[page] ?? Home
 
   return (
     <>
+      {/* the nav is five tabs deep on every route, so keyboard users get to skip it */}
+      <a className="sbp-skip" href="#main">Skip to content</a>
       <Navbar page={page} />
       {page === 'home' ? <Home /> : <Shell page={page}><Page /></Shell>}
     </>

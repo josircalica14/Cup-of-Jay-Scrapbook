@@ -47,19 +47,44 @@ function WallArt() {
 export default function Snapshots() {
   const ref = useRef(null)
   const closeBtn = useRef(null)
+  const dialog = useRef(null)
+  const opener = useRef(null) // the polaroid that opened the viewer
+  const touch = useRef(null)
   const [open, setOpen] = useState(null) // index of the photo in the viewer, or null
   useReveal(ref)
 
   const go = (i) => setOpen((i + SNAPS.length) % SNAPS.length)
 
+  const closeViewer = () => {
+    setOpen(null)
+    // hand focus back to the polaroid that opened it, not into the page body
+    opener.current?.focus()
+    opener.current = null
+  }
+
+  const openViewer = (i, el) => {
+    opener.current = el
+    setOpen(i)
+  }
+
   useEffect(() => {
     if (open === null) return
     closeBtn.current?.focus()
+
     const key = (e) => {
-      if (e.key === 'Escape') setOpen(null)
+      if (e.key === 'Escape') { closeViewer(); return }
       if (e.key === 'ArrowRight') go(open + 1)
       if (e.key === 'ArrowLeft') go(open - 1)
+      // the viewer is modal, so Tab stays inside it instead of reaching the wall
+      if (e.key !== 'Tab') return
+      const f = dialog.current?.querySelectorAll('button')
+      if (!f?.length) return
+      const first = f[0]
+      const last = f[f.length - 1]
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus() }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus() }
     }
+
     window.addEventListener('keydown', key)
     return () => window.removeEventListener('keydown', key)
   }, [open])
@@ -76,11 +101,16 @@ export default function Snapshots() {
         right={[Ring, TornStrip, Paperclip, Stars, Arrow, Bookmark]} />
 
       <div className="sbp-snaphead">
-        <PageHead kick="~/snapshots" a="Little" mark="frames" sub="tap a polaroid to look closer." />
-        {/* note taped into the empty half of the header row */}
-        <div className="sbp-wa-scrap">
-          <span className="sbp-tape" aria-hidden="true" />
-          <p>kept, not deleted</p>
+        {/* title and note sit in one flex row: the note follows the headline at a
+            fixed gap instead of being pinned to a guessed x-offset */}
+        <div className="sbp-headrow">
+          <div className="sbp-headtext">
+            <PageHead kick="~/snapshots" a="Little" mark="frames" sub="tap a polaroid to look closer." />
+          </div>
+          <div className="sbp-wa-scrap">
+            <span className="sbp-tape" aria-hidden="true" />
+            <p>kept, not deleted</p>
+          </div>
         </div>
       </div>
 
@@ -89,12 +119,15 @@ export default function Snapshots() {
         <div className="sbp-wall">
         {SNAPS.map((x, i) => (
           <button key={x.t} className="sbp-pol" data-r aria-label={`Open ${x.t}`}
-                  style={{ '--r': `${rot(i)}deg`, '--i': i % 4 }} onClick={() => setOpen(i)}>
+                  style={{ '--r': `${rot(i)}deg`, '--i': i % 4 }}
+                  onClick={(e) => openViewer(i, e.currentTarget)}>
             <span className="sbp-tape" style={{ left: '50%', marginLeft: -35, top: -12, transform: `rotate(${rot(i + 2)}deg)` }} />
-            <div className="sbp-shot" style={{ aspectRatio: ratio(i) }}>
+            <span className="sbp-shot" style={{ aspectRatio: ratio(i) }}>
+              {/* photos ship at 960px wide (~90 KB each): double the 330px column,
+                  and sharp enough for the 440px viewer */}
               <img src={x.img} alt={x.alt} loading={i < 4 ? 'eager' : 'lazy'} decoding="async" />
-            </div>
-            <p>{x.caption}</p>
+            </span>
+            <span className="sbp-pol-cap">{x.caption}</span>
             <time className="sbp-pol-date" dateTime={x.s}>{x.d}</time>
           </button>
         ))}
@@ -105,21 +138,30 @@ export default function Snapshots() {
       <p className="sbp-wall-end"><span aria-hidden="true">—</span> end of roll <span aria-hidden="true">—</span></p>
 
       {s && (
-        <div className="sbp-lb on" role="dialog" aria-modal="true" aria-label="Photo viewer"
-             onClick={(e) => e.target === e.currentTarget && setOpen(null)}>
+        <div className="sbp-lb on" role="dialog" aria-modal="true" aria-label="Photo viewer" ref={dialog}
+             onClick={(e) => e.target === e.currentTarget && closeViewer()}
+             onTouchStart={(e) => { touch.current = e.touches[0].clientX }}
+             onTouchEnd={(e) => {
+               if (touch.current === null) return
+               const dx = e.changedTouches[0].clientX - touch.current
+               if (Math.abs(dx) > 48) go(open + (dx < 0 ? 1 : -1))
+               touch.current = null
+             }}>
           <div style={{ width: 'min(440px,100%)' }}>
             <div className="sbp-pol" style={{ '--r': '-2deg' }}>
               <span className="sbp-tape" style={{ left: '50%', marginLeft: -35, top: -12 }} />
-              <div className="sbp-shot sbp-shot-full"><img src={s.img} alt={s.alt} /></div>
-              <p>{s.caption}</p>
+              <span className="sbp-shot sbp-shot-full">
+                <img src={s.img} alt={s.alt} decoding="async" />
+              </span>
+              <span className="sbp-pol-cap sbp-pol-cap-lg">{s.caption}</span>
               <time className="sbp-pol-date" dateTime={s.s}>{s.d}</time>
             </div>
-            <div style={{ color: '#fff', opacity: 0.8, textAlign: 'center', fontSize: 12, marginTop: 4 }}>
-              {open + 1} / {SNAPS.length}
+            <div style={{ color: '#fff', opacity: 0.85, textAlign: 'center', fontSize: 12, marginTop: 6 }}>
+              {open + 1} / {SNAPS.length} · swipe or use ← → to flip
             </div>
             <div className="sbp-lbbtns">
               <button className="sbp-chip" onClick={() => go(open - 1)}>← prev</button>
-              <button className="sbp-chip" ref={closeBtn} onClick={() => setOpen(null)}>close</button>
+              <button className="sbp-chip" ref={closeBtn} onClick={closeViewer}>close</button>
               <button className="sbp-chip" onClick={() => go(open + 1)}>next →</button>
             </div>
           </div>

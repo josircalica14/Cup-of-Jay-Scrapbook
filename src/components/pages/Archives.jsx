@@ -35,13 +35,27 @@ export default function Archives() {
         left={[Envelope, CalendarPage, Ring, Bookmark, Stars, Paperclip]}
         right={[Ring, Arrow, Stars, CalendarPage, Heart, Squiggle]} />
 
-      <PageHead kick="~/the archives" a="Memories," mark="in order" sub="by date and by year." />
+      {/* same header row as the snapshots wall, so the two pages open alike */}
+      <div className="sbp-headrow">
+        <div className="sbp-headtext">
+          <PageHead kick="~/the archives" a="Memories," mark="in order" sub="by date and by year." />
+        </div>
+        <div className="sbp-wa-scrap">
+          <span className="sbp-tape" aria-hidden="true" />
+          <p>kept, in order</p>
+        </div>
+      </div>
 
       <div className="sbp-chips" role="group" aria-label="Filter by year">
         {['all', ...years].map((y) => (
           <button key={y} className="sbp-chip" aria-pressed={year === y} onClick={() => setYear(y)}>{y}</button>
         ))}
       </div>
+      {/* filtering is silent otherwise: announce what the year now holds */}
+      <p className="sbp-tl-count" aria-live="polite">
+        {list.length} {list.length === 1 ? 'entry' : 'entries'}
+        {year === 'all' ? ' across every year' : ` in ${year}`}
+      </p>
 
       {/* zigzag timeline: entries alternate sides on desktop, single column on mobile */}
       <div className="sbp-tl">
@@ -64,10 +78,12 @@ export default function Archives() {
                   )}
                   <div className="sbp-meta">
                     <time>{a.d}</time>
-                    <span className="sbp-chip" style={{ cursor: 'inherit', fontSize: 10, padding: '1px 9px' }}>{a.k}</span>
+                    <span className="sbp-chip sbp-chip--tag">{a.k}</span>
                   </div>
                   <h3>{a.t}</h3>
                   <p>{a.sub}</p>
+                  {/* say where the card goes: these are links, not articles */}
+                  <span className="sbp-to" aria-hidden="true">open in {a.to.replace('-', ' ')} →</span>
                 </a>
                 <Deco a={a} n={n} isLast={n === list.length - 1} />
               </div>
